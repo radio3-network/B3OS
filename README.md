@@ -12,7 +12,6 @@
 ██║   ██║██║   ██║██║
 ╚██████╔╝╚██████╔╝██║
  ╚═════╝  ╚═════╝ ╚═╝
-
 ```
 
 The Blümchen GUI is a set of LVGL-based methods
@@ -28,4 +27,5 @@ this library because:
 
 
 License: Apache-2.0
+
 Copyright (c) radio3.network
