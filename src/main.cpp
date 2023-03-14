@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <EEPROM.h>
 #include <lvgl.h>
 #include <esp32_smartdisplay.h>
 
@@ -33,13 +34,40 @@ this library because:
 
 License: Apache-2.0
 Copyright (c) radio3.network
-URL: https://github.com/radio3-network/BluemchenOS/
+URL: https://github.com/radio3-network/BluemchenGUI/
 
 More projects at https://github.com/radio3-network/
 
 
+
+TODO:
++ define app content area
+++ respects status bar and keyboard resizing
++ clicking on textArea shows keyboard
+++ clicking away from textArea hides keyboard
+++ pressing keyboard button hides/toggles keyboard
++ dialog for wifi selection/save/connect
+x status bar with icons (e.g. WIFI)
+xx include builtin icons
++ connectivity icons on status bar
++ bluetooth, wifi, lora
++ add generic icon functionlity
+++ define PNG source on SD drive
+++ launch an app/script or method
+++ support dark and daylight mode
++ dialog for brightness (e.g. manual/automatic)
++ code for automatic brightness change
++ internal RGB led effects (e.g. breathing)
++ switch between screen dark mode and daylight
++ app launcher
 */
 
+
+
+// hardware-specific definitions
+
+static int screen_width = 320;
+static int screen_height = 240;
 
 
 // LVGL Objects
@@ -68,6 +96,26 @@ void btn_event_cb(lv_event_t *e)
 
         auto label = lv_obj_get_child(btn, 0);
         lv_label_set_text_fmt(label, "Button: %d", cnt);
+    }
+}
+
+
+/**
+ * Specific click on the settings button to
+ * display the settings dialog
+*/
+void btn_event_settings(lv_event_t *e)
+{
+    auto code = lv_event_get_code(e);
+    auto btn = lv_event_get_target(e);
+    if (code == LV_EVENT_CLICKED)
+    {
+       /* static uint8_t cnt = 0;
+        cnt++;
+
+        auto label = lv_obj_get_child(btn, 0);
+        lv_label_set_text_fmt(label, "Button: %d", cnt);
+        */
     }
 }
 
@@ -177,6 +225,55 @@ static lv_obj_t* textAreaCreate(lv_coord_t x, lv_coord_t y,
 }
 
 
+
+
+static lv_obj_t *settingBtn;
+static lv_obj_t *statusTextLabel;
+
+static void buildStatusBar() {
+
+  static lv_style_t style_btn;
+  lv_style_init(&style_btn);
+  lv_style_set_bg_color(&style_btn, lv_color_hex(0xC5C5C5));
+  lv_style_set_bg_opa(&style_btn, LV_OPA_50);
+
+  lv_obj_t *statusBar = lv_obj_create(lv_scr_act());
+  lv_obj_set_size(statusBar, screen_width, 30);
+  lv_obj_align(statusBar, LV_ALIGN_TOP_MID, 0, -1);
+
+  lv_obj_remove_style(statusBar, NULL, LV_PART_SCROLLBAR | LV_STATE_ANY);
+
+  statusTextLabel = lv_label_create(statusBar);
+  lv_obj_set_size(statusTextLabel, screen_width - 50, 30);
+
+  lv_label_set_text(statusTextLabel, LV_SYMBOL_WIFI " WiFi Not Connected" );
+  lv_obj_align(statusTextLabel, LV_ALIGN_LEFT_MID, 2, 7);
+
+  settingBtn = lv_btn_create(statusBar);
+  lv_obj_set_size(settingBtn, 30, 30);
+  lv_obj_align(settingBtn, LV_ALIGN_RIGHT_MID, 15, 0);
+
+  lv_obj_add_event_cb(settingBtn, btn_event_settings, LV_EVENT_ALL, NULL);
+  lv_obj_t *label = lv_label_create(settingBtn); /*Add a label to the button*/
+  lv_label_set_text(label, LV_SYMBOL_SETTINGS);  /*Set the labels text*/
+  lv_obj_center(label);
+}
+
+
+
+
+
+static void buildLedColorLoop(){
+
+    auto r = (byte)(millis() / 75);
+    auto g = (byte)(millis() / 10);
+    auto b = (byte)(millis() / 150);
+
+    smartdisplay_set_led_color(lv_color32_t({.ch = {.blue = b, .green = g, .red = r}}));
+
+}
+
+
 void setup_mainscreen()
 {
     // Clear screen
@@ -199,6 +296,8 @@ void setup_mainscreen()
 
     keyboardShow(textArea, NULL);
 
+    buildStatusBar();
+
 /*
     label_timer = lv_label_create(lv_scr_act());
     lv_obj_set_style_text_font(label_timer, &lv_font_montserrat_22, LV_STATE_DEFAULT);
@@ -210,24 +309,22 @@ void setup_mainscreen()
     */
 }
 
-
-    static  int64_t lastTime = esp_timer_get_time();
+static  int64_t lastTime = esp_timer_get_time();
 
 void setup()
 {
     Serial.begin(115200);
 
+    // initialize the hardware
     smartdisplay_init();
     setup_mainscreen();
 }
 
+
 void loop()
 {
-    auto r = (byte)(millis() / 75);
-    auto g = (byte)(millis() / 10);
-    auto b = (byte)(millis() / 150);
-
-    smartdisplay_set_led_color(lv_color32_t({.ch = {.blue = b, .green = g, .red = r}}));
+    // change the builtin led for fun
+    buildLedColorLoop();
 
     display_update();
     lv_timer_handler();
@@ -235,12 +332,15 @@ void loop()
     int64_t time = esp_timer_get_time();
 
     // show the current luminosity level
-    if(time > (lastTime + 1000)){
+    if(time > (lastTime + 5000)){
         lastTime = esp_timer_get_time();
         String data = "Light value ";
         int value = smartdisplay_get_light_intensity();
         Serial.print(data);
         Serial.println(value);
+
+        ///Serial.print("EEPROM size: ");
+        //Serial.println(EEPROM.length());
     }
 
 
