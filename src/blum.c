@@ -1,5 +1,8 @@
 #include <Arduino.h>
 #include <lvgl.h>
+#include "blumwifi.c"
+
+
 //#include "app_settings.c"
 
 
@@ -80,43 +83,15 @@ static int statusBarWeight = 30;
 static lv_obj_t *kb;
 static boolean keyboardvisible = false;
 static lv_obj_t *targetTextArea = NULL;
-static lv_obj_t *homeBtn;
 static lv_obj_t *statusTextLabel;
 static lv_obj_t *statusIconWifi;
 
 static lv_obj_t *settingBtn;
-static lv_obj_t *settingsWindow;
+static lv_obj_t *settingsWindow = NULL;
 
+static lv_obj_t *homeBtn;
+static lv_obj_t *homeWindow = NULL;
 
-/**
- * Specific click on the settings button to
- * display the settings dialog
-*/
-void btn_event_settings(lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    lv_obj_t *btn = lv_event_get_target(e);
-    if (code == LV_EVENT_CLICKED)
-    {
-       /* static uint8_t cnt = 0;
-        cnt++;
-
-        auto label = lv_obj_get_child(btn, 0);
-        lv_label_set_text_fmt(label, "Button: %d", cnt);
-        */
-    }
-}
-
-
-
-static lv_obj_t* createWindow(){
-    // define a window with a 0 sized header (to hide it)
-    lv_obj_t* win = lv_win_create(lv_scr_act(), 0);
-    // use all screen except the top because of the status bar
-    lv_obj_set_size(settingsWindow, LV_HOR_RES, LV_VER_RES- statusBarWeight);
-    lv_obj_align(settingsWindow, LV_ALIGN_BOTTOM_MID, 0, 0);
-    return win;
-}
 
 
 /*
@@ -172,6 +147,20 @@ static lv_obj_t* createRoller(
 void statusBarTextUpdate(const char* text){
     lv_label_set_text(statusTextLabel, text );
 }
+
+static lv_obj_t* createWindow(const char *title){
+    // define a window with a 0 sized header (to hide it)
+    lv_obj_t* win = lv_win_create(lv_scr_act(), 0);
+    // use all screen except the top because of the status bar
+    lv_obj_set_size(win, LV_HOR_RES, LV_VER_RES - statusBarWeight);
+    lv_obj_align(win, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_win_add_title(win, title);
+    // update the status bar
+    statusBarTextUpdate(title);
+    return win;
+}
+
+
 
 /**
  * Specific click on the settings button to
@@ -289,9 +278,167 @@ static lv_obj_t* textAreaCreate(lv_coord_t x, lv_coord_t y,
 }
 
 
+lv_obj_t * addListButton(
+  lv_obj_t * list, const void *icon,
+  const char *txt, lv_event_cb_t event_cb){
+  lv_obj_t * btn = lv_list_add_btn(list, icon, txt);
+  lv_obj_add_event_cb(btn, event_cb, LV_EVENT_CLICKED, NULL);
+  return btn;
+}
 
+
+
+/**
+ * dialog box for wifi
+*/
+void createWindowWifi(){
+  // create a new window
+  lv_obj_t * wifiWindow = createWindow("WiFi");
+  // content inside the window
+  lv_obj_t * cont = lv_win_get_content(wifiWindow);
+
+  // place a switch to use wifi or to shut it down
+  lv_obj_t * sw = lv_switch_create(cont);
+  lv_obj_add_state(sw, LV_STATE_DEFAULT);
+  // add a label to explain what the switch does
+  lv_obj_t * label = lv_label_create(cont);
+  lv_label_set_text(label, "Use Wifi" );
+  lv_obj_align(label, LV_ALIGN_DEFAULT, 60, 7);
+  
+  
+  // list the currently available wifi networks
+  lv_obj_t * list = lv_list_create(cont);
+  // decide where to place the list
+  int margin = 40;
+  lv_obj_set_size(list, lv_pct(100), lv_pct(75));
+  lv_obj_align(list, LV_ALIGN_DEFAULT, 0, margin);
+
+  // list all available wifi networks
+  
+    esp_netif_init();
+    esp_event_loop_create_default();
+    esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    esp_wifi_init(&cfg);
+    uint16_t number = DEFAULT_SCAN_LIST_SIZE;
+    wifi_ap_record_t ap_info[DEFAULT_SCAN_LIST_SIZE];
+    uint16_t ap_count = 0;
+    memset(ap_info, 0, sizeof(ap_info));
+    esp_wifi_set_mode(WIFI_MODE_STA);
+    esp_wifi_start();
+    esp_wifi_scan_start(NULL, true);
+    esp_wifi_scan_get_ap_records(&number, ap_info);
+    esp_wifi_scan_get_ap_num(&ap_count);
+
+    for (int i = 0; (i < DEFAULT_SCAN_LIST_SIZE) && (i < ap_count); i++) {
+        //uint8_t rssi = ap_info[i].rssi;
+        //wifi_auth_mode_t authMode = ap_info[i].authmode;
+        char ssid_text[33];
+        memcpy(ssid_text, ap_info[i].ssid, 33);
+        int rssi = 100 + ap_info[i].rssi;
+        // 55 RSSI is the maximum reference value
+        int percentage = (rssi * 100) / 55;
+        // on top of the router goes above 100%
+        if(percentage > 100){
+          percentage = 100;
+        }
+        char output_text[50];
+        sprintf(output_text, "%s (%d%%)", ssid_text, percentage);
+
+        lv_obj_t * btn = lv_list_add_btn(list, LV_SYMBOL_WIFI, output_text);
+    }
+
+    esp_wifi_stop;
+
+  // the selected wifi network is on the top
+
+
+}
+
+void event_settings_wifi(lv_event_t *e){
+  createWindowWifi();
+}
+
+void event_settings_not_implemented(lv_event_t *e){
+    lv_obj_t * mbox1 = lv_msgbox_create(NULL, 
+    "Info", "Not yet implemented", NULL, true);
+    lv_obj_center(mbox1);
+}
+
+/**
+ * Create the Settings menu for configuring the board
+*/
+void createWindowSettings(){
+    // create a usable window to place components
+    settingsWindow = createWindow("Settings");
+    // content inside the window
+    lv_obj_t * cont = lv_win_get_content(settingsWindow);
+
+
+    lv_obj_t * list = lv_list_create(cont);
+    // decide where to place the list
+    lv_obj_set_size(list, lv_pct(100), lv_pct(100));
+    lv_obj_center(list);
+    
+
+    // add the setting items
+    addListButton(list, LV_SYMBOL_GPS, "LoRa", event_settings_not_implemented);
+    addListButton(list, LV_SYMBOL_WIFI, "WiFi", event_settings_wifi);
+    addListButton(list, LV_SYMBOL_BLUETOOTH, "Bluetooth", event_settings_not_implemented);
+    addListButton(list, LV_SYMBOL_SD_CARD, "Storage", event_settings_not_implemented);
+    addListButton(list, LV_SYMBOL_BATTERY_FULL, "Power", event_settings_not_implemented);
+    addListButton(list, LV_SYMBOL_USB, "Expansion ports", event_settings_not_implemented);
+    addListButton(list, LV_SYMBOL_EYE_OPEN, "Language", event_settings_not_implemented);
+    
+}
+
+
+/**
+ * Settings click
+*/
+void btn_event_settings(lv_event_t *e){
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code != LV_EVENT_CLICKED){
+      return;
+    }
+
+    if(settingsWindow == NULL){
+          createWindowSettings();
+       }else{
+          lv_obj_del(settingsWindow);
+          settingsWindow = NULL;
+       }
+    
+}
+
+
+void createWindowHome(void){
+  // remove any previous window
+    if(homeWindow != NULL){
+        lv_obj_del(homeWindow);
+    }
+    
+    // create a usable window to place components
+    homeWindow = createWindow("Home");
+}
+
+/**
+ * Settings click
+*/
+void btn_event_home(lv_event_t *e){
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code == LV_EVENT_CLICKED){
+       createWindowHome();
+    }
+}
+
+
+
+
+/**
+ * Create the status bar always present on top of the device
+*/
 void buildStatusBar() {
-
 
   static lv_style_t style_btn;
   lv_style_init(&style_btn);
@@ -304,11 +451,14 @@ void buildStatusBar() {
 
   lv_obj_remove_style(statusBar, NULL, LV_PART_SCROLLBAR | LV_STATE_ANY);
 
-  // status lavel
+  // make sure the status bar does not move (scroll) elsewhere  
+  lv_obj_set_scroll_dir(statusBar, LV_DIR_NONE);
+
+  // status label
   statusTextLabel = lv_label_create(statusBar);
   lv_obj_set_size(statusTextLabel, screen_width - 50, 30);
   lv_label_set_text(statusTextLabel, " " );
-  lv_obj_align(statusTextLabel, LV_ALIGN_LEFT_MID, 32, 7);
+  lv_obj_align(statusTextLabel, LV_ALIGN_LEFT_MID, 28, 7);
 
   // wifi icon
   statusIconWifi = lv_label_create(statusBar);
@@ -320,8 +470,7 @@ void buildStatusBar() {
   homeBtn = lv_btn_create(statusBar);
   lv_obj_set_size(homeBtn, 30, 30);
   lv_obj_align(homeBtn, LV_ALIGN_LEFT_MID, -15, 0);
-
-  lv_obj_add_event_cb(homeBtn, btn_event_settings, LV_EVENT_ALL, NULL);
+  lv_obj_add_event_cb(homeBtn, btn_event_home, LV_EVENT_ALL, NULL);
   lv_obj_t *labelHome = lv_label_create(homeBtn); 
   lv_label_set_text(labelHome, LV_SYMBOL_HOME);  
   lv_obj_center(labelHome);
@@ -330,11 +479,9 @@ void buildStatusBar() {
   settingBtn = lv_btn_create(statusBar);
   lv_obj_set_size(settingBtn, 30, 30);
   lv_obj_align(settingBtn, LV_ALIGN_RIGHT_MID, 15, 0);
-
   lv_obj_add_event_cb(settingBtn, btn_event_settings, LV_EVENT_ALL, NULL);
   lv_obj_t *label = lv_label_create(settingBtn); 
   lv_label_set_text(label, LV_SYMBOL_SETTINGS); 
   lv_obj_center(label);
   
 }
-

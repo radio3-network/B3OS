@@ -143,7 +143,7 @@ void setup()
     lv_obj_clean(lv_scr_act());
     buildStatusBar();
     //tileView();
-    //windowSettings();
+    createWindowSettings();
 
 
     // Create a button
