@@ -143,7 +143,8 @@ void setup()
     lv_obj_clean(lv_scr_act());
     buildStatusBar();
     //tileView();
-    createWindowSettings();
+    createWindowHome();
+    //createWindowSettings();
 
 
     // Create a button
@@ -159,7 +160,7 @@ void setup()
         "TEST six";
     */
     //createRoller(140, 10, 160, 100, items, NULL);
-    //auto textArea = textAreaCreate(140, 10, 160, 100, "Write here..");
+    //auto textArea = createTextArea(140, 10, 160, 100, "Write here..");
 
     //keyboardShow(textArea, NULL);
 
