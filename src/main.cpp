@@ -139,11 +139,7 @@ void setup()
     smartdisplay_init();
 
 
-    // Clear screen
-    lv_obj_clean(lv_scr_act());
-    buildStatusBar();
-    //tileView();
-    createWindowHome();
+    
     //createWindowSettings();
 
     // Create a button

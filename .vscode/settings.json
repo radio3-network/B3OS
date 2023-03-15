@@ -6,6 +6,7 @@
         "blum_status_bar.c": "cpp",
         "blumwifi.c": "cpp",
         "blum_wifi.c": "cpp",
-        "blum_app_wifi.c": "cpp"
+        "blum_app_wifi.c": "cpp",
+        "blum_app_home.c": "cpp"
     }
 }

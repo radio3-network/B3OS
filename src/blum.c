@@ -2,10 +2,10 @@
 #include <lvgl.h>
 #include "blum_global.h"
 #include "blum_widgets.h"
-#include "blum_status_bar.c"
-#include "blum_app_home.c"
-#include "blum_app_settings.c"
-#include "blum_app_wifi.c"
+#include "blum_status_bar.h"
+#include "blum_app_home.h"
+#include "blum_app_settings.h"
+#include "blum_app_wifi.h"
 
 /*
 
@@ -73,29 +73,29 @@ x internal RGB led effects (e.g. breathing)
 
 
 
-
-
-
-static lv_obj_t* createWindow(const char *title){
-    // save the previous window
-    previousWindow = currentWindow;
+static void createWindowHome(){
+  // remove any previous window
+    if(homeWindow != NULL){
+        lv_obj_del(homeWindow);
+    }
     
-    // define a window with a 0 sized header (to hide it)
-    lv_obj_t* win = lv_win_create(lv_scr_act(), 0);
-
-    // save the new window
-    currentWindow = win;
-
-    // use all screen except the top because of the status bar
-    lv_obj_set_size(win, LV_HOR_RES, LV_VER_RES - statusBarWeight);
-    lv_obj_align(win, LV_ALIGN_BOTTOM_MID, 0, 0);
-    lv_win_add_title(win, title);
-    // update the status bar
-    statusBarTextUpdate(title);
-    statusBarBackButton();
-    return win;
+    // create a usable window to place components
+    homeWindow = createWindow("Home");
+    // reset settings for the start
+    previousWindow = NULL;
+    // set the status bar button ready for pressing
+    statusBarSettingsButton();
 }
 
+/**
+ * Home click
+*/
+void btn_event_home(lv_event_t *e){
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code == LV_EVENT_CLICKED){
+       createWindowHome();
+    }
+}
 
 static lv_obj_t * createListButton(
   lv_obj_t * list, const void *icon,
@@ -267,29 +267,9 @@ static void createSettingsButton(){
   lv_obj_center(labelSettingsButton);
 }
 
-void createWindowHome(){
-  // remove any previous window
-    if(homeWindow != NULL){
-        lv_obj_del(homeWindow);
-    }
-    
-    // create a usable window to place components
-    homeWindow = createWindow("Home");
-    // reset settings for the start
-    previousWindow = NULL;
-    // set the status bar button ready for pressing
-    statusBarSettingsButton();
-}
 
-/**
- * Home click
-*/
-void btn_event_home(lv_event_t *e){
-    lv_event_code_t code = lv_event_get_code(e);
-    if (code == LV_EVENT_CLICKED){
-       createWindowHome();
-    }
-}
+
+
 
 
 
@@ -337,4 +317,13 @@ static void buildStatusBar() {
   createSettingsButton();
 }
 
+
+
+static void start(){
+    // Clear screen
+    lv_obj_clean(lv_scr_act());
+    buildStatusBar();
+    //tileView();
+    createWindowHome();
+}
 

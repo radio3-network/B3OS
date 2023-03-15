@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include "blum_global.h"
+//#include "blum_app_home.h"
+//#include "blum_app_settings.h"
 
 
 static void statusBarBackButton(){

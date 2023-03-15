@@ -1,10 +1,7 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include "blum_global.h"
-
-#ifndef BLUM_STATUS_BAR_H
 #include "blum_status_bar.h"
-#endif
 
 
 
