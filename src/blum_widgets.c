@@ -5,6 +5,11 @@
 #include "blum_global.h"
 #endif
 
+#ifndef BLUM_STATUS_BAR_H
+#include "blum_status_bar.h"
+#endif
+
+
 
 /*
     Create a button at specific coordinates
@@ -57,7 +62,7 @@ static lv_obj_t* createRoller(
  * Specific click on the settings button to
  * display the settings dialog
 */
-void btn_event_keyboardKeypress(lv_event_t *e)
+static void btn_event_keyboardKeypress(lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t *btn = lv_event_get_target(e);
@@ -119,7 +124,7 @@ static void keyboardHide(){
 }
 
 
-void btn_event_togglekeyboard(lv_event_t *e){
+static void btn_event_togglekeyboard(lv_event_t *e){
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t *btn = lv_event_get_target(e);
     if (code == LV_EVENT_CLICKED)
@@ -135,7 +140,7 @@ void btn_event_togglekeyboard(lv_event_t *e){
 /**
  * When clicking inside a text area, show the keyboard
 */
-void btn_event_textAreaClickedShowKeyboard(lv_event_t *e)
+static void btn_event_textAreaClickedShowKeyboard(lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t *btn = lv_event_get_target(e);
@@ -167,3 +172,4 @@ static lv_obj_t* createTextArea(lv_coord_t x, lv_coord_t y,
     //TODO define this as an event for the text area 
     return textArea;
 }
+

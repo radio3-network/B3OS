@@ -26,4 +26,14 @@ static lv_obj_t *currentWindow = NULL;
 
 static boolean enabledWifi = false;
 
+
+// hardware-specific definitions
+static int screen_width = 320;
+static int screen_height = 240;
+
+
+// internal settings
+static int statusBarWeight = 30;
+
+
 #endif

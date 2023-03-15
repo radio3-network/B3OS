@@ -3,14 +3,14 @@
 #include <lvgl.h>
 #include "blum_global.h"
 
-/*
-#ifndef BLUM_STATUS_BAR_H
 
-void statusBarBackButton();
-void statusBarSettingsButton();
+#ifndef blum_status_bar_h
+#define blum_status_bar_h
+
+static void statusBarBackButton();
+static void statusBarSettingsButton();
+static void statusBarTextUpdate(const char* text);
 
 #endif
-*/
-
 
 

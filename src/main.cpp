@@ -146,7 +146,6 @@ void setup()
     createWindowHome();
     //createWindowSettings();
 
-
     // Create a button
     //createButton(10, 10, 120, 50, "Teste", btn_event_button1);
     //createButton(10, 70, 120, 50, "Keyboard", btn_event_togglekeyboard);

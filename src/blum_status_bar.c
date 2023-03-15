@@ -3,17 +3,20 @@
 #include <lvgl.h>
 #include "blum_global.h"
 
-/*
-#ifndef BLUM_STATUS_BAR_C
-#define BLUM_STATUS_BAR_C
 
-void statusBarBackButton(){
+static void statusBarBackButton(){
   lv_label_set_text(labelSettingsButton, LV_SYMBOL_LEFT);
 }
 
-void statusBarSettingsButton(){
+static void statusBarSettingsButton(){
   lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS);
 }
 
-#endif
+/**
+ * Update the status bar text
 */
+static void statusBarTextUpdate(const char* text){
+    lv_label_set_text(statusTextLabel, text );
+}
+
+

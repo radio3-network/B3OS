@@ -1,9 +1,11 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include "blum_global.h"
-//#include "blum_status_bar.h"
-#include "blum_wifi.c"
-
+#include "blum_widgets.h"
+#include "blum_status_bar.c"
+#include "blum_app_home.c"
+#include "blum_app_settings.c"
+#include "blum_app_wifi.c"
 
 /*
 
@@ -68,33 +70,11 @@ x internal RGB led effects (e.g. breathing)
 
 
 
-// hardware-specific definitions
-
-
-static int screen_width = 320;
-static int screen_height = 240;
-
-
-// internal settings
-static int statusBarWeight = 30;
 
 
 
-void statusBarBackButton(){
-  lv_label_set_text(labelSettingsButton, LV_SYMBOL_LEFT);
-}
-
-void statusBarSettingsButton(){
-  lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS);
-}
 
 
-/**
- * Update the status bar text
-*/
-void statusBarTextUpdate(const char* text){
-    lv_label_set_text(statusTextLabel, text );
-}
 
 static lv_obj_t* createWindow(const char *title){
     // save the previous window
@@ -117,10 +97,7 @@ static lv_obj_t* createWindow(const char *title){
 }
 
 
-
-
-
-lv_obj_t * addListButton(
+static lv_obj_t * createListButton(
   lv_obj_t * list, const void *icon,
   const char *txt, lv_event_cb_t event_cb){
   lv_obj_t * btn = lv_list_add_btn(list, icon, txt);
@@ -209,11 +186,6 @@ void event_settings_wifi(lv_event_t *e){
   createWindowWifi();
 }
 
-void event_settings_not_implemented(lv_event_t *e){
-    lv_obj_t * mbox1 = lv_msgbox_create(NULL, 
-    "Info", "Not yet implemented", NULL, true);
-    lv_obj_center(mbox1);
-}
 
 /**
  * Create the Settings menu for configuring the board
@@ -240,15 +212,17 @@ void createWindowSettings(){
     
 
     // add the setting items
-    addListButton(list, LV_SYMBOL_GPS, "LoRa", event_settings_not_implemented);
-    addListButton(list, LV_SYMBOL_WIFI, "WiFi", event_settings_wifi);
-    addListButton(list, LV_SYMBOL_BLUETOOTH, "Bluetooth", event_settings_not_implemented);
-    addListButton(list, LV_SYMBOL_SD_CARD, "Storage", event_settings_not_implemented);
-    addListButton(list, LV_SYMBOL_BATTERY_FULL, "Power", event_settings_not_implemented);
-    addListButton(list, LV_SYMBOL_USB, "Expansion ports", event_settings_not_implemented);
-    addListButton(list, LV_SYMBOL_EYE_OPEN, "Language", event_settings_not_implemented);
+    createListButton(list, LV_SYMBOL_GPS, "LoRa", event_settings_not_implemented);
+    createListButton(list, LV_SYMBOL_WIFI, "WiFi", event_settings_wifi);
+    createListButton(list, LV_SYMBOL_BLUETOOTH, "Bluetooth", event_settings_not_implemented);
+    createListButton(list, LV_SYMBOL_SD_CARD, "Storage", event_settings_not_implemented);
+    createListButton(list, LV_SYMBOL_BATTERY_FULL, "Power", event_settings_not_implemented);
+    createListButton(list, LV_SYMBOL_USB, "Expansion ports", event_settings_not_implemented);
+    createListButton(list, LV_SYMBOL_EYE_OPEN, "Language", event_settings_not_implemented);
     
 }
+
+
 
 
 /**
@@ -258,7 +232,7 @@ void btn_event_settings(lv_event_t *e){
     lv_event_code_t code = lv_event_get_code(e);
     
     if(currentWindow == settingsWindow){
-      statusBarSettingsButton;
+      statusBarSettingsButton();
       lv_obj_move_foreground(homeWindow);
       currentWindow = homeWindow;
       previousWindow = NULL;
@@ -282,6 +256,17 @@ void btn_event_settings(lv_event_t *e){
 }
 
 
+
+static void createSettingsButton(){
+  settingBtn = lv_btn_create(statusBar);
+  lv_obj_set_size(settingBtn, 30, 30);
+  lv_obj_align(settingBtn, LV_ALIGN_RIGHT_MID, 15, 0);
+  lv_obj_add_event_cb(settingBtn, btn_event_settings, LV_EVENT_CLICKED, NULL);
+  labelSettingsButton = lv_label_create(settingBtn); 
+  lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS); 
+  lv_obj_center(labelSettingsButton);
+}
+
 void createWindowHome(){
   // remove any previous window
     if(homeWindow != NULL){
@@ -297,7 +282,7 @@ void createWindowHome(){
 }
 
 /**
- * Settings click
+ * Home click
 */
 void btn_event_home(lv_event_t *e){
     lv_event_code_t code = lv_event_get_code(e);
@@ -307,22 +292,11 @@ void btn_event_home(lv_event_t *e){
 }
 
 
-void createSettingsButton(){
-  settingBtn = lv_btn_create(statusBar);
-  lv_obj_set_size(settingBtn, 30, 30);
-  lv_obj_align(settingBtn, LV_ALIGN_RIGHT_MID, 15, 0);
-  lv_obj_add_event_cb(settingBtn, btn_event_settings, LV_EVENT_CLICKED, NULL);
-  labelSettingsButton = lv_label_create(settingBtn); 
-  lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS); 
-  lv_obj_center(labelSettingsButton);
-}
-
-
 
 /**
  * Create the status bar always present on top of the device
 */
-void buildStatusBar() {
+static void buildStatusBar() {
 
   static lv_style_t style_btn;
   lv_style_init(&style_btn);
@@ -362,4 +336,5 @@ void buildStatusBar() {
   // settings button
   createSettingsButton();
 }
+
 
