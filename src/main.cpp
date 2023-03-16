@@ -42,16 +42,6 @@ More projects at https://github.com/radio3-network/
 
 Reference documentation for LVGL: https://docs.lvgl.io/8/
 
-/*
-
-// hardware-specific definitions
-
-static int screen_width = 320;
-static int screen_height = 240;
-
-
-*/
-
 
 /**
  * Changes the builtin-LED colors in random colors
@@ -123,10 +113,6 @@ void tileView(void)
     lv_list_add_btn(list, NULL, "Nine");
     lv_list_add_btn(list, NULL, "Ten");
 }
-
-
-
-
 
 
 

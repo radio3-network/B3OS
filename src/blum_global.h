@@ -1,6 +1,8 @@
 #ifndef BLUM_GLOBAL_H
 #define BLUM_GLOBAL_H
 
+#include <utils/utils.h>
+
 // global objects
 static lv_obj_t *kb;
 static boolean keyboardvisible = false;
@@ -20,6 +22,7 @@ static lv_obj_t *homeWindow = NULL;
 static lv_obj_t *previousBtn;
 static lv_obj_t *previousWindow = NULL;
 static lv_obj_t *currentWindow = NULL;
+static HashMap* mapWindows = NULL;
 
 static boolean enabledWifi = false;
 
@@ -32,5 +35,7 @@ static int screen_height = 240;
 // internal settings
 static int statusBarWeight = 30;
 
+
+//#include "blum_global.c"
 
 #endif

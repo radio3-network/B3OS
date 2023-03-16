@@ -1,11 +1,12 @@
 #include <Arduino.h>
 #include <lvgl.h>
+#include <utils/utils.h>
 #include "blum_global.h"
 #include "blum_widgets.h"
 #include "blum_status_bar.h"
-#include "blum_app_home.h"
-#include "blum_app_settings.h"
-#include "blum_app_wifi.h"
+#include "apps/blum_app_home.h"
+#include "apps/blum_app_settings.h"
+#include "apps/blum_app_wifi.h"
 
 /*
 

@@ -2,9 +2,6 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include "blum_global.h"
-//#include "blum_widgets.h"
-//#include "blum_app_home.h"
-//#include "blum_app_settings.h"
 
 
 static void statusBarBackButton(){
@@ -61,10 +58,4 @@ static void buildStatusBar() {
   lv_obj_t *labelHome = lv_label_create(homeBtn); 
   lv_label_set_text(labelHome, LV_SYMBOL_HOME);  
   lv_obj_center(labelHome);
- 
-  //addEventButtonHome();
-  //lv_obj_add_event_cb(homeBtn, btn_event_home, LV_EVENT_CLICKED, NULL);
-  // settings button
-  //createSettingsButton();
-  /* */
 }
