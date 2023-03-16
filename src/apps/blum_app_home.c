@@ -3,6 +3,7 @@
 #include "blum_global.h"
 #include "blum_widgets.h"
 #include "blum_status_bar.h"
+#include "core/blum_navigation.h"
 
 
 
@@ -16,10 +17,10 @@ static void createWindowHome(){
  * Home click
 */
 static void btn_event_home(lv_event_t *e){
-    lv_event_code_t code = lv_event_get_code(e);
-    if (code == LV_EVENT_CLICKED){
-       createWindowHome();
-    }
+    // reset everything
+    navClean();
+    // create the new window again
+    createWindowHome();
 }
 
 

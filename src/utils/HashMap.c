@@ -39,7 +39,7 @@ HashMap* map = createHashMap();
 #define HASHSIZE 101
 
 typedef struct hashentry {
-    char* key;
+    const char* key;
     void* value;
     struct hashentry* next;
 } HashEntry;
@@ -48,7 +48,7 @@ typedef struct hashmap {
     HashEntry* table[HASHSIZE];
 } HashMap;
 
-static unsigned hash(char* key) {
+static unsigned hash(const char* key) {
     unsigned hashval = 0;
     for (hashval = 0; *key != '\0'; key++) {
         hashval = *key + 31 * hashval;
@@ -56,13 +56,13 @@ static unsigned hash(char* key) {
     return hashval % HASHSIZE;
 }
 
-static HashMap* createHashMap() {
+static HashMap* HashMapCreate() {
     HashMap* map = (HashMap*)malloc(sizeof(HashMap));
     memset(map->table, 0, sizeof(map->table));
     return map;
 }
 
-static void insert(HashMap* map, char* key, void* value) {
+static void HashMapInsert(HashMap* map, const char* key, void* value) {
     HashEntry* entry = (HashEntry*)malloc(sizeof(HashEntry));
     entry->key = key;
     entry->value = value;
@@ -71,7 +71,7 @@ static void insert(HashMap* map, char* key, void* value) {
     map->table[hashval] = entry;
 }
 
-static void* get(HashMap* map, char* key) {
+static void* HashMapGet(HashMap* map, const char* key) {
     HashEntry* entry;
     for (entry = map->table[hash(key)]; entry != NULL; entry = entry->next) {
         if (strcmp(key, entry->key) == 0) {
@@ -81,7 +81,7 @@ static void* get(HashMap* map, char* key) {
     return NULL;
 }
 
-static void removeKey(HashMap* map, char* key) {
+static void HashMapRemoveKey(HashMap* map, const char* key) {
     unsigned hashval = hash(key);
     HashEntry* prev = NULL;
     HashEntry* entry = map->table[hashval];
@@ -100,7 +100,7 @@ static void removeKey(HashMap* map, char* key) {
     free(entry);
 }
 
-static int containsKey(HashMap* map, char* key) {
+static int HashMapContainsKey(HashMap* map, const char* key) {
     unsigned hashval = hash(key);
     HashEntry* entry;
     for (entry = map->table[hashval]; entry != NULL; entry = entry->next) {
@@ -111,7 +111,7 @@ static int containsKey(HashMap* map, char* key) {
     return 0;
 }
 
-static void clearHashMap(HashMap* map) {
+static void HashMapClear(HashMap* map) {
     HashEntry* entry;
     HashEntry* temp;
     for (int i = 0; i < HASHSIZE; i++) {
@@ -125,12 +125,12 @@ static void clearHashMap(HashMap* map) {
     }
 }
 
-static void destroyHashMap(HashMap* map) {
-    clearHashMap(map);
+static void HashMapDestroy(HashMap* map) {
+    HashMapClear(map);
     free(map);
 }
 
-static void iterateHashMap(HashMap* map) {
+static void HashMapIterate(HashMap* map) {
     HashEntry* entry;
     for (int i = 0; i < HASHSIZE; i++) {
         for (entry = map->table[i]; entry != NULL; entry = entry->next) {

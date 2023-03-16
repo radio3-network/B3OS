@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include <lvgl.h>
+#include "utils/utils.h"
 #include "blum_global.h"
 #include "blum_status_bar.h"
+#include "core/blum_navigation.h"
 
 
 static lv_obj_t * createListButton(
@@ -14,13 +16,26 @@ static lv_obj_t * createListButton(
 
 
 static lv_obj_t* createWindow(const char *title){
-    // define a window with a 0 sized header (to hide it)
-    lv_obj_t* win = lv_win_create(lv_scr_act(), 0);
 
-    // use all screen except the top because of the status bar
-    lv_obj_set_size(win, LV_HOR_RES, LV_VER_RES - statusBarWeight);
-    lv_obj_align(win, LV_ALIGN_BOTTOM_MID, 0, 0);
-    lv_win_add_title(win, title);
+    lv_obj_t* win;
+    
+    // avoid creating a new window when it already exists
+    if(HashMapContainsKey(mapWindows, title)){
+        // provide the previously created window
+        lv_obj_t* existingWindow = (lv_obj_t*) HashMapGet(mapWindows, title);
+        return existingWindow;        
+    }else{
+        // define a window with a 0 sized header (to hide it)
+        win = lv_win_create(lv_scr_act(), 0);
+        // use all screen except the top because of the status bar
+        lv_obj_set_size(win, LV_HOR_RES, LV_VER_RES - statusBarWeight);
+        lv_obj_align(win, LV_ALIGN_BOTTOM_MID, 0, 0);
+        lv_win_add_title(win, title);
+    }
+
+    // add to the index
+    navNew(title);
+
     return win;
 }
 

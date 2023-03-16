@@ -74,6 +74,7 @@ static void navClean(){
 }
 
 static void navNew(const char *title){
+    // get the index number
     int i = navGetIndex();
     if(i == -1){
         return;
