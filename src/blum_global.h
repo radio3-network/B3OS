@@ -41,4 +41,6 @@ static int screen_height = 240;
 static int statusBarWeight = 30;
 
 
+//#include "blum_global.c"
+
 #endif

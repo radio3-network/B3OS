@@ -98,6 +98,22 @@ static void navGoBack(){
     // update the label
     lv_label_set_text(statusTextLabel, key);
 
+    
+    // means we are on the root again
+    if(i == 0){
+        // delete the memory map
+        HashMapClear(mapWindows);
+        // add again the root window
+        HashMapInsert(mapWindows, key, win);
+        // restore the icon and index
+        navClean();
+        // add home again on the index
+        navNew(key);
+        // stop it here
+        return;
+    }
+   
+
     // delete the current index memory
     navDelete(i+1);
     

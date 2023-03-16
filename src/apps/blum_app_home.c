@@ -8,6 +8,10 @@
 
 
 static void createWindowHome(){
+    // delete the memory map
+    HashMapClear(mapWindows);
+    // restore the icon and index
+    navClean();
     // create a usable window to place components
     homeWindow = createWindow("Home");
 }
