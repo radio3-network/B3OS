@@ -15,17 +15,8 @@ static void event_settings_not_implemented(lv_event_t *e){
  * Create the Settings menu for configuring the board
 */
 static void createWindowSettings(){
-    
-    if(settingsWindow != NULL){
-      lv_obj_move_foreground(settingsWindow);
-      statusBarBackButton();
-      currentWindow = settingsWindow;
-      previousWindow = NULL;
-      return;
-    }else{
-      // create a usable window to place components
-      settingsWindow = createWindow("Settings");
-    }
+    // create a usable window to place components
+    settingsWindow = createWindow("Settings");
     
     // content inside the window
     lv_obj_t * cont = lv_win_get_content(settingsWindow);
@@ -52,30 +43,6 @@ static void createWindowSettings(){
  * Settings click
 */
 static void btn_event_settings(lv_event_t *e){
-    lv_event_code_t code = lv_event_get_code(e);
-    
-    if(currentWindow == settingsWindow){
-      statusBarSettingsButton();
-      lv_obj_move_foreground(homeWindow);
-      currentWindow = homeWindow;
-      previousWindow = NULL;
-      return;
-    }
-
-
-    if(previousWindow == NULL){
-      if(settingsWindow == NULL){
-            createWindowSettings();
-            return;
-        }else{
-            lv_obj_move_foreground(settingsWindow);
-            return;
-        }
-    }
-
-      lv_obj_move_foreground(previousWindow);
-      currentWindow = previousWindow;
-      previousWindow = NULL;
 }
 
 

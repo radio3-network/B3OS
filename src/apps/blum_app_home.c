@@ -7,17 +7,8 @@
 
 
 static void createWindowHome(){
-  // remove any previous window
-    if(homeWindow != NULL){
-        lv_obj_del(homeWindow);
-    }
-    
     // create a usable window to place components
     homeWindow = createWindow("Home");
-    // reset settings for the start
-    previousWindow = NULL;
-    // set the status bar button ready for pressing
-    statusBarSettingsButton();
 }
 
 

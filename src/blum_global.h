@@ -21,9 +21,13 @@ static lv_obj_t *homeBtn;
 static lv_obj_t *homeWindow = NULL;
 
 static lv_obj_t *previousBtn;
-static lv_obj_t *previousWindow = NULL;
-static lv_obj_t *currentWindow = NULL;
 static HashMap* mapWindows = NULL;
+
+// max number of deep navigation
+#define max_navigation_count 10
+
+// array of 10 strings, each with up to 100 characters
+static char indexData[max_navigation_count][100]; 
 
 static boolean enabledWifi = false;
 

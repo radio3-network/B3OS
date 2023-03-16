@@ -43,15 +43,8 @@ static wifi_ap_record_t getWifiNetworks(){
  * dialog box for wifi
 */
 static void createWindowWifi(){
-  if(wifiWindow != NULL){
-    lv_obj_move_foreground(wifiWindow);
-    currentWindow = wifiWindow;
-    statusBarBackButton();
-    return;
-  }else{
-    // create a new window
-    wifiWindow = createWindow("WiFi");
-  }
+  // create a new window
+  wifiWindow = createWindow("WiFi");
   // content inside the window
   lv_obj_t * cont = lv_win_get_content(wifiWindow);
 

@@ -43,12 +43,6 @@ static void statusBarTextUpdate(const char* text){
 
 
 
-// max number of deep navigation
-#define max_navigation_count 10
-
-// array of 10 strings, each with up to 100 characters
-static char indexData[max_navigation_count][100]; 
-    
 
 
 static int navGetIndex(){
@@ -57,7 +51,7 @@ static int navGetIndex(){
         return 0;
     }
     for(int i = 1; i < max_navigation_count; i++){
-        if(indexData[i] == NULL){
+        if(indexData[i] == ""){
             return i-1;
         }
     }
@@ -66,7 +60,7 @@ static int navGetIndex(){
 }
 
 static void navDelete(int indexNumber){
-    strcpy(indexData[indexNumber], NULL);
+    strcpy(indexData[indexNumber], "");
 }
 
 /**
@@ -75,7 +69,7 @@ static void navDelete(int indexNumber){
 static void navClean(){
     for(int i = 0; i < max_navigation_count; i++){
         // nullify all boxes
-        strcpy(indexData[i], NULL);
+        strcpy(indexData[i], "");
     }
 }
 

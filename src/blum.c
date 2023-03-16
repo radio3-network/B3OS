@@ -71,10 +71,12 @@ x internal RGB led effects (e.g. breathing)
 */
 
 static void start(){
-    // clear screen
+    // clear screen and events
     lv_obj_clean(lv_scr_act());
     // add the status bar
     buildStatusBar();
+    // add the navigation
+    navClean();
     // add status bar events
     addEventButtonHome();
     addEventButtonSettings();
