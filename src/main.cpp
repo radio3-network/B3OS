@@ -118,7 +118,7 @@ void tileView(void)
 
 void setup()
 {
-    Serial.begin(115200);
+    //Serial.begin(115200);
 
     // initialize the hardware
     smartdisplay_init();
@@ -180,8 +180,8 @@ void loop()
     if(time > (lastTime + 1000000)){
         lastTime = esp_timer_get_time();
         int value = smartdisplay_get_light_intensity();
-        log("LDR", value);
-        log("Time", lastTime);
+        //log("LDR", value);
+        //log("Time", lastTime);
     }
 
     // intervals of 5 seconds

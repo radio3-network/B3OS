@@ -70,7 +70,11 @@ x internal RGB led effects (e.g. breathing)
 + app launcher
 */
 
+
+
 static void start(){
+    // start the serial output
+    SerialSetup();
     // clear screen and events
     lv_obj_clean(lv_scr_act());
     mapWindows = HashMapCreate();
@@ -83,5 +87,6 @@ static void start(){
     addEventButtonSettings();
     // initial window
     createWindowHome();
+
 }
 

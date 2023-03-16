@@ -37,10 +37,13 @@ static int screen_width = 320;
 static int screen_height = 240;
 
 
+//static int serial_port_speed = 115200;
+
+
 // internal settings
 static int statusBarWeight = 30;
 
 
-//#include "blum_global.c"
+#include "blum_global.c"
 
 #endif
