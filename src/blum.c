@@ -71,13 +71,18 @@ x internal RGB led effects (e.g. breathing)
 */
 
 
-
 static void start(){
     // Clear screen
     lv_obj_clean(lv_scr_act());
+    // navigation
+    mapWindows = createHashMap();
+    navStart();
+    // status bar
     buildStatusBar();
+    // events
     addEventButtonHome();
     createSettingsButton();
+    // start window
     createWindowHome();
 }
 
