@@ -43,7 +43,7 @@ static void createWindowSettings(){
  * Settings click
 */
 static void btn_event_settings(lv_event_t *e){
-  int i = navGetIndex();
+  int i = navGetNextFreeIndex();
   // root index, show the settings window
   if(i == 1){
     createWindowSettings();

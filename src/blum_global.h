@@ -26,8 +26,8 @@ static HashMap* mapWindows = NULL;
 // max number of deep navigation
 #define max_navigation_count 10
 
-// array of 10 strings, each with up to 100 characters
-static char indexData[max_navigation_count][100]; 
+// navigation index
+static StringArray *indexData;
 
 static boolean enabledWifi = false;
 
@@ -40,7 +40,5 @@ static int screen_height = 240;
 // internal settings
 static int statusBarWeight = 30;
 
-
-//#include "blum_global.c"
 
 #endif

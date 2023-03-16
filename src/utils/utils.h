@@ -2,5 +2,6 @@
 #define UTILS_H
 
 #include "HashMap.c"
+#include "StringArray.c"
 
 #endif

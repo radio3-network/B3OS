@@ -27,6 +27,8 @@ static lv_obj_t* createWindow(const char *title){
     }else{
         // define a window with a 0 sized header (to hide it)
         win = lv_win_create(lv_scr_act(), 0);
+        // add to the map
+        HashMapInsert(mapWindows, title, (void*)win);
         // use all screen except the top because of the status bar
         lv_obj_set_size(win, LV_HOR_RES, LV_VER_RES - statusBarWeight);
         lv_obj_align(win, LV_ALIGN_BOTTOM_MID, 0, 0);

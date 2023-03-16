@@ -45,68 +45,61 @@ static void statusBarTextUpdate(const char* text){
 
 
 
-static int navGetIndex(){
-    for(int i = 0; i < max_navigation_count; i++){
-        if(strlen(indexData[i]) == 0) {
-            return i;
-        }
-    }
-    // already full
-    return -1;
+static int navGetNextFreeIndex(){
+    return StringArray_size(indexData);
 }
 
 static void navDelete(int indexNumber){
-    strcpy(indexData[indexNumber], "");
+    StringArray_delete(indexData, indexNumber);
 }
 
 /**
  * The beginning. Starts with the home window
 */
 static void navClean(){
-    for(int i = 0; i < max_navigation_count; i++){
-        // nullify all boxes
-        strcpy(indexData[i], "");
+    
+    if(indexData != NULL){
+        StringArray_destroy(indexData);
     }
+    // create a new index
+    indexData = StringArray_create(max_navigation_count);
     // reset the icon for settings
     lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS);
 }
 
 static void navNew(const char *title){
-    // get the index number
-    int i = navGetIndex();
-    if(i == -1){
-        return;
-    }
+    // add it to memory
+    StringArray_add(indexData, title);
 
-    char titleId[50];
-    sprintf(titleId, "%s %d", title, i);
-
+    int i = StringArray_size(indexData) - 1;
+    const char * key = StringArray_get(indexData, i);
+    
     // change the title on the status bar
-    lv_label_set_text(statusTextLabel, titleId);
+    lv_label_set_text(statusTextLabel, title);
     // add the appropriate icon
     if(i == 0){
         lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS);
     }else{
         lv_label_set_text(labelSettingsButton, LV_SYMBOL_LEFT);
     }
-    // add to memory
-    strcpy(indexData[i], title);
+    
 }
 
 static void navGoBack(){
-    // get the current index
-    int i = navGetIndex();
-    if(i == -1){
-        return;
-    }
-    // delete the current index memory
-    navDelete(i);
-    //TODO delete the related window
-    // get the window name
-    const char * key = indexData[i];
+
+    int i = StringArray_size(indexData) - 2;
+    const char * key = StringArray_get(indexData, i);
+
+
     // using the window name, get the window object
     lv_obj_t * win = (lv_obj_t*) HashMapGet(mapWindows, key);
     // bring this window object to the foreground
     lv_obj_move_foreground(win);
+    // update the label
+    lv_label_set_text(statusTextLabel, key);
+
+    // delete the current index memory
+    navDelete(i+1);
+    
 }
 
