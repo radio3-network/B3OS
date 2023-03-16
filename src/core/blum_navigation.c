@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <lvgl.h>
 #include "blum_global.h"
 #include "../utils/utils.h"
 
@@ -38,7 +39,6 @@ static void statusBarTextUpdate(const char* text){
 }
 
 
-
 */
 
 
@@ -46,13 +46,9 @@ static void statusBarTextUpdate(const char* text){
 
 
 static int navGetIndex(){
-    // when the first is null this means home
-    if(indexData[0] == NULL){
-        return 0;
-    }
-    for(int i = 1; i < max_navigation_count; i++){
-        if(indexData[i] == ""){
-            return i-1;
+    for(int i = 0; i < max_navigation_count; i++){
+        if(strlen(indexData[i]) == 0) {
+            return i;
         }
     }
     // already full
@@ -71,6 +67,8 @@ static void navClean(){
         // nullify all boxes
         strcpy(indexData[i], "");
     }
+    // reset the icon for settings
+    lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS);
 }
 
 static void navNew(const char *title){
@@ -79,14 +77,36 @@ static void navNew(const char *title){
     if(i == -1){
         return;
     }
+
+    char titleId[50];
+    sprintf(titleId, "%s %d", title, i);
+
+    // change the title on the status bar
+    lv_label_set_text(statusTextLabel, titleId);
+    // add the appropriate icon
+    if(i == 0){
+        lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS);
+    }else{
+        lv_label_set_text(labelSettingsButton, LV_SYMBOL_LEFT);
+    }
+    // add to memory
     strcpy(indexData[i], title);
 }
 
 static void navGoBack(){
+    // get the current index
     int i = navGetIndex();
     if(i == -1){
         return;
     }
+    // delete the current index memory
     navDelete(i);
+    //TODO delete the related window
+    // get the window name
+    const char * key = indexData[i];
+    // using the window name, get the window object
+    lv_obj_t * win = (lv_obj_t*) HashMapGet(mapWindows, key);
+    // bring this window object to the foreground
+    lv_obj_move_foreground(win);
 }
 

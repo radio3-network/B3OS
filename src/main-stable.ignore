@@ -9,7 +9,6 @@ static lv_obj_t *label_some_text;
 void display_update()
 {
     char time_buffer[32];
-
     sprintf(time_buffer, "%d", millis());
     lv_label_set_text(label_timer, time_buffer);
 }

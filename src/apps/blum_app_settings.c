@@ -43,6 +43,14 @@ static void createWindowSettings(){
  * Settings click
 */
 static void btn_event_settings(lv_event_t *e){
+  int i = navGetIndex();
+  // root index, show the settings window
+  if(i == 1){
+    createWindowSettings();
+    return;
+  }
+  // else this is a "go back" button
+  navGoBack();
 }
 
 
@@ -50,13 +58,3 @@ static void addEventButtonSettings(){
   lv_obj_add_event_cb(settingBtn, btn_event_settings, LV_EVENT_CLICKED, NULL);
 }
 
-/*
-static void createSettingsButton(){
-  settingBtn = lv_btn_create(statusBar);
-  lv_obj_set_size(settingBtn, 30, 30);
-  lv_obj_align(settingBtn, LV_ALIGN_RIGHT_MID, 15, 0);
-  labelSettingsButton = lv_label_create(settingBtn); 
-  lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS); 
-  lv_obj_center(labelSettingsButton);
-}
-*/
