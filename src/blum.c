@@ -2,6 +2,7 @@
 #include <lvgl.h>
 #include <utils/utils.h>
 #include "blum_global.h"
+#include "core/blum_navigation.h"
 #include "blum_widgets.h"
 #include "blum_status_bar.h"
 #include "apps/blum_app_home.h"

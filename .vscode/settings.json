@@ -8,6 +8,8 @@
         "blum_wifi.c": "cpp",
         "blum_app_wifi.c": "cpp",
         "blum_app_home.c": "cpp",
-        "blum_app_settings.c": "cpp"
+        "blum_app_settings.c": "cpp",
+        "blum_widgets.c": "cpp",
+        "blum_navigation.c": "cpp"
     }
 }

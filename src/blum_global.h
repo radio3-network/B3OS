@@ -1,6 +1,7 @@
 #ifndef BLUM_GLOBAL_H
 #define BLUM_GLOBAL_H
 
+#include <lvgl.h>
 #include <utils/utils.h>
 
 // global objects
