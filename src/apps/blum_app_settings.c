@@ -79,13 +79,17 @@ static void btn_event_settings(lv_event_t *e){
 }
 
 
+static void addEventButtonSettings(){
+  lv_obj_add_event_cb(settingBtn, btn_event_settings, LV_EVENT_CLICKED, NULL);
+}
+
+/*
 static void createSettingsButton(){
   settingBtn = lv_btn_create(statusBar);
   lv_obj_set_size(settingBtn, 30, 30);
   lv_obj_align(settingBtn, LV_ALIGN_RIGHT_MID, 15, 0);
-  lv_obj_add_event_cb(settingBtn, btn_event_settings, LV_EVENT_CLICKED, NULL);
   labelSettingsButton = lv_label_create(settingBtn); 
   lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS); 
   lv_obj_center(labelSettingsButton);
 }
-
+*/

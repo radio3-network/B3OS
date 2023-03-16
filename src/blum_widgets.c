@@ -1,9 +1,7 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include "blum_global.h"
-#include "core/blum_navigation.h"
 #include "blum_status_bar.h"
-
 
 
 static lv_obj_t * createListButton(
@@ -19,15 +17,6 @@ static lv_obj_t* createWindow(const char *title){
     // save the previous window
     previousWindow = currentWindow;
     
-    /*
-    // avoid creating a new window when it already exists
-    if(HashMapContainsKey(mapWindows, title)){
-        // provide the previously created window
-        lv_obj_t* existingWindow = (lv_obj_t*) HashMapGet(mapWindows, title);
-        return existingWindow;        
-    }
-    */
-  
     // define a window with a 0 sized header (to hide it)
     lv_obj_t* win = lv_win_create(lv_scr_act(), 0);
 

@@ -72,7 +72,7 @@ static void navDelete(int indexNumber){
 /**
  * The beginning. Starts with the home window
 */
-static void navStart(){
+static void navClean(){
     for(int i = 0; i < max_navigation_count; i++){
         // nullify all boxes
         strcpy(indexData[i], NULL);

@@ -2,9 +2,9 @@
 #include <lvgl.h>
 #include <utils/utils.h>
 #include "blum_global.h"
-#include "core/blum_navigation.h"
 #include "blum_widgets.h"
 #include "blum_status_bar.h"
+#include "core/blum_navigation.h"
 #include "apps/blum_app_home.h"
 #include "apps/blum_app_settings.h"
 #include "apps/blum_app_wifi.h"
@@ -70,19 +70,15 @@ x internal RGB led effects (e.g. breathing)
 + app launcher
 */
 
-
 static void start(){
-    // Clear screen
+    // clear screen
     lv_obj_clean(lv_scr_act());
-    // navigation
-    mapWindows = createHashMap();
-    navStart();
-    // status bar
+    // add the status bar
     buildStatusBar();
-    // events
+    // add status bar events
     addEventButtonHome();
-    createSettingsButton();
-    // start window
+    addEventButtonSettings();
+    // initial window
     createWindowHome();
 }
 
