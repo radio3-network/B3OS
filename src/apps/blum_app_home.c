@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <lvgl.h>
-#include "blum_global.h"
-#include "blum_widgets.h"
-#include "blum_status_bar.h"
+#include "core/blum_global.h"
+#include "core/blum_widgets.h"
+#include "core/blum_status_bar.h"
 #include "core/blum_navigation.h"
 
 
