@@ -1,6 +1,3 @@
-#include <Arduino.h>
-#include <lvgl.h>
-
 #ifndef BLUM_GLOBAL_H
 #define BLUM_GLOBAL_H
 

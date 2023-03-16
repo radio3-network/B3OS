@@ -1,16 +1,16 @@
 #include <Arduino.h>
 #include <lvgl.h>
-
-#ifndef BLUM_GLOBAL_H
 #include "blum_global.h"
-#endif
-
-#ifndef BLUM_STATUS_BAR_H
 #include "blum_status_bar.h"
-#endif
 
 
-
+static lv_obj_t * createListButton(
+  lv_obj_t * list, const void *icon,
+  const char *txt, lv_event_cb_t event_cb){
+  lv_obj_t * btn = lv_list_add_btn(list, icon, txt);
+  lv_obj_add_event_cb(btn, event_cb, LV_EVENT_CLICKED, NULL);
+  return btn;
+}
 
 
 static lv_obj_t* createWindow(const char *title){

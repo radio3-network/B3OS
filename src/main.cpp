@@ -139,7 +139,7 @@ void setup()
     smartdisplay_init();
 
 
-    
+    start();
     //createWindowSettings();
 
     // Create a button
