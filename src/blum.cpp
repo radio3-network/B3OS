@@ -71,10 +71,23 @@ x internal RGB led effects (e.g. breathing)
 */
 
 
+static void loadFlashValues(){
+    preferences.begin(NAMESPACE, false);
+    // WIFI
+    enabledWifi = preferences.getBool(KEY_WIFI_ENABLED, false);
+    //wifi_ssid = TextKeyValueStore::get(KEY_WIFI_SSID);
+    //wifi_password = TextKeyValueStore::get(KEY_WIFI_PASSWORD);
+    preferences.end();
+
+ 
+}
+
+
 
 static void start(){
-    // data from flash
-    //TextKeyValueStore_begin(1024);
+    Serial.begin(115200);
+    // load values in flash memory
+    loadFlashValues();
     // clear screen and events
     lv_obj_clean(lv_scr_act());
     mapWindows = HashMapCreate();

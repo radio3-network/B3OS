@@ -39,6 +39,25 @@ static wifi_ap_record_t getWifiNetworks(){
     return *ap_info;
 }
 
+static void btn_event_switch(lv_event_t *e){
+  enabledWifi = lv_obj_has_state(switchWifi, LV_STATE_CHECKED);
+
+  // write to flash memory
+  preferences.begin(NAMESPACE, false);
+  preferences.putBool(KEY_WIFI_ENABLED, enabledWifi);
+  preferences.end();
+
+  // send a debug message
+  if(debug){
+   if(enabledWifi){
+      Serial.println("Wifi: Turn ON");
+   }else{
+      Serial.println("Wifi: Turn OFF");
+   }
+   }
+   
+}
+
 
 /**
  * dialog box for wifi
@@ -50,8 +69,18 @@ static void createWindowWifi(){
   lv_obj_t * cont = lv_win_get_content(wifiWindow);
 
   // place a switch to use wifi or to shut it down
-  lv_obj_t * sw = lv_switch_create(cont);
-  lv_obj_add_state(sw, LV_STATE_DEFAULT);
+  switchWifi = lv_switch_create(cont);
+
+  // setup the initial state
+  if(enabledWifi){
+    lv_obj_add_state(switchWifi, LV_STATE_CHECKED);
+  }else{
+    lv_obj_add_state(switchWifi, LV_STATE_DEFAULT);
+  }
+
+  // add an event to when the switch is clicked
+  lv_obj_add_event_cb(switchWifi, btn_event_switch, LV_EVENT_CLICKED, NULL);
+  
   // add a label to explain what the switch does
   lv_obj_t * label = lv_label_create(cont);
   lv_label_set_text(label, "Use Wifi" );

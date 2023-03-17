@@ -2,7 +2,12 @@
 #define BLUM_GLOBAL_H
 
 #include <lvgl.h>
+#include <Preferences.h>
 #include <utils/utils.h>
+
+// global settings
+static bool debug = true;
+
 
 // global objects
 static lv_obj_t *kb;
@@ -29,7 +34,26 @@ static HashMap* mapWindows = NULL;
 // navigation index
 static StringArray *indexData;
 
+
+// settings saved on flash
+
+static Preferences preferences;
+static const char* NAMESPACE = "internal";
+
+static const char*  KEY_WIFI_ENABLED = "WIFI_ENABLED";
+static const char*  KEY_WIFI_SSID = "WIFI_SSID";
+static const char*  KEY_WIFI_PASSWORD = "WIFI_PASSWORD";
+
+static const char* wifi_ssid = NULL;
+static const char* wifi_password = NULL;
+  
+
+
+
+
+
 static boolean enabledWifi = false;
+static lv_obj_t * switchWifi = NULL;
 
 
 // hardware-specific definitions
