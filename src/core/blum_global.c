@@ -1,6 +1,6 @@
 
-#ifndef BLUM_GLOBAL_C
-#define BLUM_GLOBAL_C
+#ifndef BLUM_GLOBAL_CPP
+#define BLUM_GLOBAL_CPP
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"

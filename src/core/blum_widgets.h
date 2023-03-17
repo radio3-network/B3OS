@@ -1,6 +1,6 @@
 #ifndef BLUM_WIDGETS_H
 #define BLUM_WIDGETS_H
 
-#include "blum_widgets.c"
+#include "blum_widgets.cpp"
 
 #endif

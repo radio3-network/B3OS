@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include "core/blum_global.h"
+#include "core/blum_widgets.h"
 
 // this WiFi access is specific to ESP-based WiFi boards
 // example docs at https://github.com/espressif/esp-idf/tree/master/examples/wifi

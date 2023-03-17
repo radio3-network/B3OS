@@ -1,7 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "HashMap.c"
-#include "StringArray.c"
+#include "HashMap.cpp"
+#include "StringArray.cpp"
+#include "flash_write.cpp"
 
 #endif

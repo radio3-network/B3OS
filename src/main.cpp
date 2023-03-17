@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include <esp32_smartdisplay.h>
-#include "blum.c"
+#include "blum.cpp"
 
 /*
 
