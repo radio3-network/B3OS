@@ -6,6 +6,8 @@
 #define TFT_WIDTH 240
 #define TFT_HEIGHT 320
 
+#define TFT_PANEL_ORDER_BGR
+
 // screen model and pins
 #define ILI9431
 #define ILI9431_SPI_SCLK 14

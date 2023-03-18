@@ -10,7 +10,7 @@ that you are using.
 
 //// Boards with CPU + Display + Touch ////
 
-#include "boards/ESP32_2432S028R.h"
+#include "boards/ESP32_2432S028R_BGR.h"
 //#include "boards/ESP32_3248S035C.h"
 //#include "boards/ESP32_3248S035R.h"
 
