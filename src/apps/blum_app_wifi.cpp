@@ -50,8 +50,10 @@ static void btn_event_switch(lv_event_t *e){
   // send a debug message
   if(debug){
    if(enabledWifi){
+      iconWifiCreate();
       Serial.println("Wifi: Turn ON");
    }else{
+      iconWifiRemove();
       Serial.println("Wifi: Turn OFF");
    }
    }

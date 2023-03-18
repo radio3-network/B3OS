@@ -95,6 +95,10 @@ static void navGoBack(){
     lv_obj_t * win = (lv_obj_t*) HashMapGet(mapWindows, key);
     // bring this window object to the foreground
     lv_obj_move_foreground(win);
+    // redraw it again
+    //TODO not yet working
+    lv_obj_invalidate(win);
+    lv_task_handler();
     // update the label
     lv_label_set_text(statusTextLabel, key);
 

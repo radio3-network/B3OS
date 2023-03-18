@@ -4,6 +4,7 @@
 #include "blum_global.h"
 
 
+
 static void statusBarBackButton(){
   lv_label_set_text(labelSettingsButton, LV_SYMBOL_LEFT);
 }
@@ -20,6 +21,23 @@ static void statusBarTextUpdate(const char* text){
 }
 
 
+
+static void iconWifiCreate(){
+  if(statusIconWifi != NULL){
+    return;
+  }
+  statusIconWifi = lv_label_create(statusBar);
+  lv_label_set_text(statusIconWifi, LV_SYMBOL_WIFI);
+  lv_obj_align(statusIconWifi, LV_ALIGN_RIGHT_MID, -20, 0);
+}
+
+static void iconWifiRemove(){
+  if(statusIconWifi == NULL){
+    return;
+  }
+  lv_obj_del(statusIconWifi);
+  statusIconWifi = NULL;
+}
 
 /**
  * Create the status bar always present on top of the device
@@ -46,10 +64,9 @@ static void buildStatusBar() {
   lv_obj_align(statusTextLabel, LV_ALIGN_LEFT_MID, 28, 7);
 
   // wifi icon
-  statusIconWifi = lv_label_create(statusBar);
-  lv_label_set_text(statusIconWifi, LV_SYMBOL_WIFI);
-  lv_obj_align(statusIconWifi, LV_ALIGN_RIGHT_MID, -20, 0);
-  
+  if(enabledWifi){
+    iconWifiCreate();
+  }
 
   // home button
   homeBtn = lv_btn_create(statusBar);
