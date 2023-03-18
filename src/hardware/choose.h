@@ -15,9 +15,6 @@ that you are using.
 //#include "boards/ESP32_3248S035R.h"
 
 
-
-
-
 /*
 
 Board not found?
@@ -45,5 +42,18 @@ Please follow the same order on the description.
 This helps to be consistent. Some displays use
 RGB, others use BGR for colors. Put this also
 on the file name when existing different versions.
+
+
+       _
+     _( )_
+    (_(0)_)
+      (_)       Can you help others getting their board working?
+       | __
+       |/_/     Leave a line with your contact below
+       |        and commit an update to this file.
+       |
+
+        [2023] Max Brito https://github.com/maxbrito500
+
 
 */

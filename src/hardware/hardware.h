@@ -4,9 +4,12 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <lvgl.h>
+
+/*
 #ifdef ESP32_3248S035C
 #include <Wire.h>
 #endif
+*/
 
 #include <mutex>
 

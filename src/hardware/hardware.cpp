@@ -1,6 +1,8 @@
 #include "hardware.h"
+#include <lvgl.h>
 
 std::recursive_mutex lvgl_mutex;
+
 
 // Functions to be defined in the tft driver
 extern void lvgl_tft_init();
@@ -11,26 +13,25 @@ extern void lvgl_touch_init();
 extern void lvgl_touch_read(lv_indev_drv_t *drv, lv_indev_data_t *data);
 
 
+/**
+ * Each hardware needs its driver initialized here
+*/
 
-#if !defined(ESP32_2432S028R) && !defined(ESP32_3248S035R) && !defined(ESP32_3248S035C)
-#error Please define type: ESP32_2432S028R, ESP32_3248S035R or ESP32_3248S035C
+#ifdef ILI9431
+SPIClass spi_ili9431;
 #endif
 
-// Hardware interfaces
-#ifdef ESP32_2432S028R
-SPIClass spi_ili9431;
+#ifdef XPT2046
 SPIClass spi_xpt2046;
 #endif
 
-#ifdef ESP32_3248S035R
+#ifdef ST7796
 SPIClass spi_st7796;
 #endif
 
-#ifdef ESP32_3248S035C
-SPIClass spi_st7796;
+#ifdef GT911
 TwoWire i2c_gt911 = TwoWire(1); // Bus number 1
 #endif
-
 
 
 #if LV_USE_LOG
@@ -75,21 +76,9 @@ void smartdisplay_init()
 */
   lv_init();
 
-// Setup interfaces
-#ifdef ESP32_2432S028R
-  spi_ili9431.begin(ILI9431_SPI_SCLK, ILI9431_SPI_MISO, ILI9431_SPI_MOSI);
-  spi_xpt2046.begin(XPT2046_SPI_SCLK, XPT2046_SPI_MISO, XPT2046_SPI_MOSI);
-#endif
+  // Setup interfaces
+  setupHardwareInterfaces();
 
-#ifdef ESP32_3248S035R
-  spi_st7796.begin(ST7796_SPI_SCLK, ST7796_SPI_MISO, ST7796_SPI_MOSI);
-  // xpy2046 uses same SPI bus
-#endif
-
-#ifdef ESP32_3248S035C
-  spi_st7796.begin(ST7796_SPI_SCLK, ST7796_SPI_MISO, ST7796_SPI_MOSI);
-  i2c_gt911.begin(GT911_IIC_SDA, GT911_IIC_SCL);
-#endif
 
   // Setup TFT display
   lvgl_tft_init();

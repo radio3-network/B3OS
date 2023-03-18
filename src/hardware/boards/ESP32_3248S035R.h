@@ -3,7 +3,6 @@
 #include <lvgl.h>
 
 // ESP32_3248S035R
-#ifdef ESP32_3248S035R
 #define TFT_WIDTH 320
 #define TFT_HEIGHT 480
 #define ST7796
@@ -25,14 +24,13 @@
 #define XPT2046_SPI_FREQ 2000000
 #define XPT2046_PIN_INT 36
 #define XPT2046_PIN_CS 33
+
 // Calibration 320x480
 #define XPT2046_MIN_X 256
 #define XPT2046_MAX_X 3860
 #define XPT2046_MIN_Y 180
 #define XPT2046_MAX_Y 3900
 
-extern SPIClass spi_st7796;
-#define spi_xpt2046 spi_st7796
 
 // Build in RGB LED
 #define LED_PIN_R 4
@@ -59,4 +57,10 @@ extern SPIClass spi_st7796;
 #define TF_PIN_MISC 19
 
 
-#endif
+static SPIClass spi_st7796;
+#define spi_xpt2046 spi_st7796
+
+static void setupHardwareInterfaces(){
+  spi_st7796.begin(ST7796_SPI_SCLK, ST7796_SPI_MISO, ST7796_SPI_MOSI);
+  // xpy2046 uses same SPI bus
+}

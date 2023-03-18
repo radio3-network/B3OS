@@ -35,10 +35,6 @@
 #define XPT2046_MIN_Y 247
 #define XPT2046_MAX_Y 3871
 
-extern SPIClass spi_ili9431;
-extern SPIClass spi_xpt2046;
-
-
 // Build in RGB LED
 #define LED_PIN_R 4
 #define LED_PIN_G 16
@@ -62,6 +58,16 @@ extern SPIClass spi_xpt2046;
 #define TS_PIN_MOSI 23
 #define TF_PIN_SCLK 18
 #define TF_PIN_MISC 19
+
+
+extern SPIClass spi_ili9431;
+extern SPIClass spi_xpt2046;
+
+static void setupHardwareInterfaces(){
+    spi_ili9431.begin(ILI9431_SPI_SCLK, ILI9431_SPI_MISO, ILI9431_SPI_MOSI);
+    spi_xpt2046.begin(XPT2046_SPI_SCLK, XPT2046_SPI_MISO, XPT2046_SPI_MOSI);
+}
+
 
 
 #endif

@@ -1,10 +1,9 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <lvgl.h>
+#include <Wire.h>
 
 
-
-#ifdef ESP32_3248S035C
 #define TFT_WIDTH 320
 #define TFT_HEIGHT 480
 #define ST7796
@@ -23,10 +22,6 @@
 #define GT911_IIC_SDA 33
 #define GT911_IIC_SCL 32
 #define GT911_IIC_RST 25
-
-extern SPIClass spi_st7796;
-extern TwoWire i2c_gt911;
-
 
 // Build in RGB LED
 #define LED_PIN_R 4
@@ -53,4 +48,11 @@ extern TwoWire i2c_gt911;
 #define TF_PIN_MISC 19
 
 
-#endif
+static SPIClass spi_st7796;
+static TwoWire i2c_gt911 = TwoWire(1); // Bus number 1
+
+
+static void setupHardwareInterfaces(){
+  spi_st7796.begin(ST7796_SPI_SCLK, ST7796_SPI_MISO, ST7796_SPI_MOSI);
+  i2c_gt911.begin(GT911_IIC_SDA, GT911_IIC_SCL);
+}
