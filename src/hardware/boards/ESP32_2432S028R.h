@@ -3,7 +3,6 @@
 #include <lvgl.h>
 
 // ESP32_2432S028R
-#ifdef ESP32_2432S028R
 #define TFT_WIDTH 240
 #define TFT_HEIGHT 320
 
@@ -68,6 +67,3 @@ static void setupHardwareInterfaces(){
     spi_xpt2046.begin(XPT2046_SPI_SCLK, XPT2046_SPI_MISO, XPT2046_SPI_MOSI);
 }
 
-
-
-#endif
