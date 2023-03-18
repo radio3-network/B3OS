@@ -61,6 +61,14 @@ static void btn_event_switch(lv_event_t *e){
 }
 
 
+static void btn_event_wifi_select(lv_event_t *e){
+     lv_obj_t *btn = lv_event_get_target(e);
+     const char *output_text = static_cast<const char*>(lv_obj_get_user_data(btn));
+     Serial.print("Clicked to select Wifi: ");
+     Serial.println(output_text);
+}
+
+
 /**
  * dialog box for wifi
 */
@@ -129,7 +137,8 @@ static void createWindowWifi(){
         sprintf(output_text, "%s (%d%%)", ssid_text, percentage);
 
         lv_obj_t * btn = lv_list_add_btn(list, LV_SYMBOL_WIFI, output_text);
-        //TODO: add event to select a wifi network
+        // add event to select a wifi network
+        lv_obj_add_event_cb(btn, btn_event_wifi_select, LV_EVENT_CLICKED, output_text);
     }
 
     esp_wifi_stop;

@@ -85,6 +85,9 @@ static void loadFlashValues(){
 
 
 static void start(){
+    // start the hardware
+    smartdisplay_init();
+    // make the serial line available
     Serial.begin(115200);
     // load values in flash memory
     loadFlashValues();

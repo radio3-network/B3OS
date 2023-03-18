@@ -4,6 +4,8 @@
 #include <lvgl.h>
 #include <Preferences.h>
 #include <utils/utils.h>
+#include "hardware/hardware.h"
+
 
 // global settings
 static bool debug = true;

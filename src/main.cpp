@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <lvgl.h>
-#include <esp32_smartdisplay.h>
+//#include <esp32_smartdisplay.h>
 #include "blum.cpp"
 
 /*
@@ -121,7 +121,7 @@ void setup()
     //Serial.begin(115200);
 
     // initialize the hardware
-    smartdisplay_init();
+    //smartdisplay_init();
 
 
     start();
