@@ -37,4 +37,31 @@
 
 extern SPIClass spi_ili9431;
 extern SPIClass spi_xpt2046;
+
+
+// Build in RGB LED
+#define LED_PIN_R 4
+#define LED_PIN_G 16
+#define LED_PIN_B 17
+// PWM channels for RGB
+#define LED_PWM_FREQ 5000
+#define LED_PWM_CHANNEL_R 13
+#define LED_PWM_CHANNEL_G 14
+#define LED_PWM_CHANNEL_B 15
+#define LED_PWM_BITS 8
+#define LED_PWM_MAX ((1 << LED_PWM_BITS) - 1)
+
+// Photo resistor
+#define CDS_PIN 34 // ANALOG_PIN_0
+
+// Audio out
+#define AUDIO_PIN 26
+
+// TF Card
+#define TF_PIN_CS 5
+#define TS_PIN_MOSI 23
+#define TF_PIN_SCLK 18
+#define TF_PIN_MISC 19
+
+
 #endif
