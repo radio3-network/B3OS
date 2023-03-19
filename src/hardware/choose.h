@@ -1,3 +1,6 @@
+#ifndef CHOOSE_H
+#define CHOOSE_H
+
 /*
 
 This is the place to choose the type of board
@@ -15,9 +18,16 @@ that you are using.
 //#include "boards/ESP32_3248S035R.h"
 
 
+
+// veiify that a minimal hardware has been set
+#if !defined(HAS_BOARD) && !defined(HAS_DISPLAY) && !defined(HAS_TOUCH)
+#error To compile this code, please open hardware/choose.h and choose your hardware
+#endif
+
+
 /*
 
-Board not found?
+Board not listed here yet?
 
 In case you don't see your board here, copy
 one of the existing files and use as template.
@@ -49,11 +59,12 @@ on the file name when existing different versions.
     (_(0)_)
       (_)       Can you help others getting their board working?
        | __
-       |/_/     Leave a line with your contact below
-       |        and commit an update to this file.
+       |/_/       Leave a line with your contact below
+       |          and commit an update to this file.
        |
 
         [2023] Max Brito https://github.com/maxbrito500
 
 
 */
+#endif

@@ -8,6 +8,10 @@
 
 #define TFT_PANEL_ORDER_BGR
 
+#define HAS_BOARD
+#define HAS_DISPLAY
+#define HAS_TOUCH
+
 // screen model and pins
 #define ILI9431
 #define ILI9431_SPI_SCLK 14
