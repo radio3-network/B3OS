@@ -83,6 +83,8 @@ void loop()
 {
     lv_timer_handler();
 
+    loopBluetooth();
+
     // change the builtin led for fun
     buildLedColorLoop();
     

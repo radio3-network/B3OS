@@ -1,0 +1,295 @@
+
+#include <Arduino.h>
+#include <ArduinoBLE.h>
+#include <Preferences.h>
+
+
+#define DEVICE_NAME "ESP32Mouse"
+#define SERVICE_UUID "00001812-0000-1000-8000-00805f9b34fb"
+
+#define HID_UUID 1812
+
+static void bleCentralDiscoverHandlerX(BLEDevice peripheral) {
+
+/*
+Example mouse to connect
+Address: e0:d1:5a:06:cf:a4
+Peripheral local name: M585/M590
+Peripheral Service UUID: 1812
+Appearance: 0x0
+Device name: 
+*/
+
+
+/*
+    if(strcmp(peripheral.localName().c_str(), "M585/M590") != 0){
+        return;
+    }
+
+*/
+    // only accept HID devices (Human Interface Devices like mouses and keyboards)
+    // see https://github.com/NordicSemiconductor/bluetooth-numbers-database/blob/master/v1/service_uuids.json
+    if(strcmp(peripheral.advertisedServiceUuid().c_str(), "1812") != 0){
+        return;
+    }
+
+    BLEDevice central = BLE.central();
+
+    uint16_t appearance = peripheral.appearance();
+    if (appearance == 0x03C2) {
+      Serial.println("Bluetooth mouse in pairing mode detected!");
+    }
+
+    //BLECharacteristic c = peripheral.characteristic();
+    //BLEDescriptor d = c.descriptor("1812", 0);
+    
+    int sCount = peripheral.advertisedServiceUuidCount();
+
+    for(int i = 0; i < sCount; i++){
+      Serial.print("Service: ");
+      Serial.println(peripheral.advertisedServiceUuid(i));
+    }
+      
+        for (int j = 0; j < peripheral.characteristicCount(); j++) {
+          BLECharacteristic characteristic = peripheral.characteristic(j);
+          
+          Serial.print("Characteristic ");
+          Serial.print(j);
+          Serial.print(" - UUID: ");
+          Serial.print(characteristic.uuid());
+          Serial.print(", Value: ");
+          
+          if (characteristic.valueLength() > 0) {
+            const uint8_t* value = characteristic.value();
+            for (int k = 0; k < characteristic.valueLength(); k++) {
+              Serial.print(value[k], HEX);
+              Serial.print(" ");
+            }
+          } else {
+            Serial.print("empty");
+          }
+          
+          Serial.println();
+        }
+      
+
+
+
+
+    Serial.print("Address: ");
+    Serial.println(peripheral.address());
+    
+    Serial.print("Peripheral local name: ");
+    Serial.println(peripheral.localName());
+    
+    Serial.print("Peripheral Service UUID: ");
+    Serial.println(peripheral.advertisedServiceUuid());
+    
+    Serial.print("Appearance: 0x");
+    Serial.println(peripheral.appearance(), HEX);
+    
+    Serial.print("Device name: ");
+    Serial.println(peripheral.deviceName());
+    
+    //peripheral.characteristic;
+    Serial.println("--------------");
+
+
+
+  // check if peripheral is a mouse
+    if (peripheral.deviceName().indexOf("Mouse") == -1) {
+        return;
+    }
+    Serial.print("Found Mouse: ");
+    Serial.print(peripheral.address().c_str());
+    
+
+    // check if the mouse is already paired
+    Preferences preferences;
+    preferences.begin("mouse_pairing", false);
+    String known_address = preferences.getString("address", "");
+    preferences.end();
+
+    if (known_address == peripheral.address().c_str()) {
+      Serial.println(", already paired.");
+    } else {
+      Serial.println(", pairing...");
+
+      if (peripheral.connect()) {
+        Serial.println("Connected successfully!");
+        
+        if (peripheral.connect()) {
+          Serial.println("Paired successfully!");
+          
+          preferences.begin("mouse_pairing", false);
+          preferences.putString("address", peripheral.address().c_str());
+          preferences.end();
+        } else {
+          Serial.println("Failed to pair!");
+        }
+      } else {
+        Serial.println("Failed to connect!");
+      }
+    }
+  
+}
+
+
+
+
+
+static void setupBluetooth() {
+  if (!BLE.begin()) {
+    Serial.println("starting Bluetooth Low Energy module failed!");
+    return;
+  }
+
+  Serial.println("Bluetooth Low Energy scan initiated");
+
+  // set the discovered event handle
+  BLE.setEventHandler(BLEDiscovered, bleCentralDiscoverHandlerX);
+
+  // start scanning for peripherals with duplicates
+  //BLE.scanForUuid(SERVICE_UUID);
+  BLE.setConnectable(true);
+  // set the scan duration to 10 seconds
+  BLE.setConnectionInterval(2000, 10000);
+  BLE.scan();
+}
+
+
+static void loopBluetooth() {
+  // poll the central for events
+  BLE.poll();
+}
+
+
+
+/*
+static void bleCentralDiscoverHandler(BLEDevice peripheral) {
+  // discovered a peripheral
+  Serial.println("Discovered a peripheral");
+  Serial.println("-----------------------");
+
+  // print address
+  Serial.print("Address: ");
+  Serial.println(peripheral.address());
+
+  // print the local name, if present
+  if (peripheral.hasLocalName()) {
+    Serial.print("Local Name: ");
+    Serial.println(peripheral.localName());
+  }
+
+  // print the advertised service UUIDs, if present
+  if (peripheral.hasAdvertisedServiceUuid()) {
+    Serial.print("Service UUIDs: ");
+    for (int i = 0; i < peripheral.advertisedServiceUuidCount(); i++) {
+      Serial.print(peripheral.advertisedServiceUuid(i));
+      Serial.print(" ");
+    }
+    Serial.println();
+  }
+
+  // print the RSSI
+  Serial.print("RSSI: ");
+  Serial.println(peripheral.rssi());
+
+  Serial.println();
+}
+*/
+/*
+static void setupBluetooth(){
+    if (!BLE.begin()) {
+        Serial.println("starting Bluetooth® Low Energy module failed!");
+        return;
+    }
+
+    Serial.println("Bluetooth® Low Energy Central scan callback");
+
+    // set the discovered event handle
+    BLE.setEventHandler(BLEDiscovered, bleCentralDiscoverHandler);
+
+    // start scanning for peripherals with duplicates
+    BLE.scan(true);
+
+}
+*/
+
+
+
+
+/*
+static BLEClient* ble_client = nullptr;
+static BLEAddress mouse_address;
+static BLECharacteristic* rx_characteristic = nullptr;
+
+
+static Preferences preferences;
+
+static void print_ble_error(const char* message, const int code) {
+  Serial.print(message);
+  Serial.print(": ");
+  Serial.println(code);
+}
+
+static void ble_scan_callback(BLEScanResults scan_results) {
+  for (int i = 0; i < scan_results.getCount(); i++) {
+    BLEAdvertisedDevice advertised_device = scan_results.getDevice(i);
+    if (advertised_device.getName() == DEVICE_NAME) {
+      mouse_address = advertised_device.getAddress();
+      BLEDevice::stopScan();
+      return;
+    }
+  }
+}
+
+static void setup_bluetooth() {
+  BLEDevice::init(DEVICE_NAME);
+  BLEScan* ble_scan = BLEDevice::getScan();
+  ble_scan->setActiveScan(true);
+  ble_scan->setInterval(100);
+  ble_scan->setWindow(99);
+  BLEDevice::setEncryptionLevel(ESP_BLE_SEC_ENCRYPT);
+  BLEDevice::setSecurityIOCap(BLE_SEC_IO_CAP_NONE);
+
+  ble_scan->start(5, ble_scan_callback);
+
+  if (mouse_address.length() == 0) {
+    Serial.println("Failed to find a mouse to pair with.");
+    return;
+  }
+
+  ble_client = BLEDevice::createClient();
+  ble_client->connect(mouse_address);
+  if (!ble_client->isConnected()) {
+    Serial.println("Failed to connect to the mouse.");
+    return;
+  }
+
+  rx_characteristic = ble_client->getService(SERVICE_UUID)->getCharacteristic(CHARACTERISTIC_UUID_RX);
+  if (rx_characteristic == nullptr) {
+    Serial.println("Failed to get the RX characteristic from the mouse.");
+return;
+}
+
+rx_characteristic->registerForNotify([](BLERemoteCharacteristic* characteristic, uint8_t* data, size_t length, bool is_notify) {
+// Handle incoming data from the mouse
+// This function will be called whenever the mouse sends data
+});
+}
+
+void setup() {
+Serial.begin(9600);
+while (!Serial);
+preferences.begin("my-app", false);
+setup_bluetooth();
+}
+
+void loop() {
+// Main loop code
+// Handle outgoing data to the mouse
+// This could involve reading data from sensors or user input and sending it to the mouse
+delay(10);
+}
+*/

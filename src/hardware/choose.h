@@ -13,13 +13,21 @@ that you are using.
 
 //// Boards with CPU + Display + Touch ////
 
+
+// Sunton boards
+// purchase: https://www.aliexpress.com/item/1005004502250619.html
+
 #include "boards/ESP32_2432S028R_BGR.h"
+//#include "boards/ESP32_2432S028R_RGB.h"
 //#include "boards/ESP32_3248S035C.h"
 //#include "boards/ESP32_3248S035R.h"
 
 
+// ESP8266 boards
+//#include "boards/ESP2866_NodeMCU_V3.h"
 
-// veiify that a minimal hardware has been set
+
+// verify that a minimal hardware has been set
 #if !defined(HAS_BOARD) && !defined(HAS_DISPLAY) && !defined(HAS_TOUCH)
 #error To compile this code, please open hardware/choose.h and choose your hardware
 #endif

@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <lvgl.h>
+#include "bluetooth/bluetooth.cpp"
 
 
 #include <mutex>

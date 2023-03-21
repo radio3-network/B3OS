@@ -89,8 +89,21 @@ static void start(){
     smartdisplay_init();
     // make the serial line available
     Serial.begin(115200);
+    while (!Serial);
+    Serial.println("");
+    Serial.println("       _                ");
+    Serial.println("     _( )_              ");
+    Serial.println("    (_(0)_)             ");
+    Serial.println("      (_)               ");
+    Serial.println("       | __    Running  ");
+    Serial.println("       |/_/    Blumchen ");
+    Serial.println("       |                ");
+    Serial.println("       |                ");
+    Serial.println("");
     // load values in flash memory
     loadFlashValues();
+    // load bluetooth
+    setupBluetooth();
     // clear screen and events
     lv_obj_clean(lv_scr_act());
     mapWindows = HashMapCreate();

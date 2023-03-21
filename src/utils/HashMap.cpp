@@ -6,12 +6,10 @@
 
 Usage examples:
 
-HashMap* map = createHashMap();
+HashMap* map = HashMapCreate();
 
     // Add items to the map
-    insert(map, "apple", (void*)"A fruit");
-    insert(map, "banana", (void*)"A fruit");
-    insert(map, "carrot", (void*)"A vegetable");
+    HashMapInsert(map, "apple", (void*)"A fruit");
 
     // Get values from the map
     printf("%s\n", (char*)get(map, "apple"));  // Output: A fruit
