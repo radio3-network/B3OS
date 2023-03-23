@@ -27,6 +27,7 @@ that you are using.
 //#include "boards/ESP2866_NodeMCU_V3.h"
 
 
+
 // verify that a minimal hardware has been set
 #if !defined(HAS_BOARD) && !defined(HAS_DISPLAY) && !defined(HAS_TOUCH)
 #error To compile this code, please open hardware/choose.h and choose your hardware

@@ -1,4 +1,4 @@
-
+/*
 #include <Arduino.h>
 #include <ArduinoBLE.h>
 #include <Preferences.h>
@@ -11,7 +11,7 @@
 #define HID_UUID 1812
 
 static void bleCentralDiscoverHandlerX(BLEDevice peripheral) {
-
+*/
 /*
 Example mouse to connect
 Address: e0:d1:5a:06:cf:a4
@@ -28,6 +28,7 @@ Device name:
     }
 
 */
+/*
     // only accept HID devices (Human Interface Devices like mouses and keyboards)
     // see https://github.com/NordicSemiconductor/bluetooth-numbers-database/blob/master/v1/service_uuids.json
     if(strcmp(peripheral.advertisedServiceUuid().c_str(), "1812") != 0){

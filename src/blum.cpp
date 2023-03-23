@@ -103,7 +103,7 @@ static void start(){
     // load values in flash memory
     loadFlashValues();
     // load bluetooth
-    setupBluetooth();
+    //setupBluetooth();
     // clear screen and events
     lv_obj_clean(lv_scr_act());
     mapWindows = HashMapCreate();
@@ -116,6 +116,6 @@ static void start(){
     addEventButtonSettings();
     // initial window
     createWindowHome();
-
+    
 }
 
