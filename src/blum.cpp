@@ -9,6 +9,7 @@
 #include "apps/blum_app_settings.h"
 #include "apps/blum_app_wifi.h"
 
+
 /*
 
 ██████╗ ██╗     ██╗   ██╗███████╗███╗   ███╗ ██████╗██╗  ██╗███████╗███╗   ██╗
@@ -116,6 +117,15 @@ static void start(){
     addEventButtonSettings();
     // initial window
     createWindowHome();
-    
+    // create the terminal
+    setupTerminal();
+}
+
+static void loopBlum(){
+
+
+    lv_timer_handler();
+    loopTerminal();
+
 }
 

@@ -79,9 +79,10 @@ static void log(String title, int value){
     Serial.println(value);
 }
 
-void loop()
-{
-    lv_timer_handler();
+void loop(){
+
+    loopBlum();
+
 
     //loopBluetooth();
 

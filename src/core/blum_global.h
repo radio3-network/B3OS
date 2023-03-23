@@ -5,6 +5,7 @@
 #include <Preferences.h>
 #include <utils/utils.h>
 #include "hardware/hardware.h"
+#include "core/blum_terminal.hpp"
 
 
 // global settings
