@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <ArduinoBLE.h>
 #include <Preferences.h>
+#include <BluetoothSerial.h>
 
 
 #define DEVICE_NAME "ESP32Mouse"
