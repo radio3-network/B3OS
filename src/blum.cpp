@@ -84,7 +84,6 @@ static void loadFlashValues(){
 }
 
 
-
 static void start(){
     // start the hardware
     smartdisplay_init();
@@ -118,14 +117,13 @@ static void start(){
     // initial window
     createWindowHome();
     // create the terminal
-    setupTerminal();
+    //setupTerminal();
 }
 
 static void loopBlum(){
 
 
     lv_timer_handler();
-    loopTerminal();
-
+    //loopTerminal();
 }
 

@@ -28,6 +28,9 @@ You would likely use this library because:
     + keyboard on screen is automatically handled
 
 
+![Animated demonstration](/docs/screenshots/video_2023-03-24_10-19-02.gif)
+
+
 License: Apache-2.0
 
 Copyright (c) radio3.network
