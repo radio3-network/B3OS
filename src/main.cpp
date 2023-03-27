@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <lvgl.h>
 #include "blum.cpp"
-#include <microBox.h>
 
 /*
 
@@ -44,18 +43,8 @@ Reference documentation for LVGL: https://docs.lvgl.io/8/
 */
 
 
-char historyBuf[100];
-char hostname[] = "esp32";
-
-PARAM_ENTRY Params[]=
-{
-  {"hostname", hostname, PARTYPE_STRING | PARTYPE_RW, sizeof(hostname), NULL, NULL, 0}, 
-  {NULL, NULL}
-};
-
 void setup(){
    start();
-   microbox.begin(&Params[0], hostname, true, historyBuf, 100);
 }
 
 
@@ -95,8 +84,6 @@ void loop(){
 
     loopBlum();
 
-
-    microbox.cmdParser();
 
     //loopBluetooth();
 

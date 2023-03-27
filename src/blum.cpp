@@ -10,6 +10,7 @@
 #include "apps/blum_app_wifi.h"
 
 
+
 /*
 
 ██████╗ ██╗     ██╗   ██╗███████╗███╗   ███╗ ██████╗██╗  ██╗███████╗███╗   ██╗
@@ -100,6 +101,9 @@ static void start(){
     Serial.println("       |                ");
     Serial.println("       |                ");
     Serial.println("");
+    Serial.println("\033[0;37m");
+    Serial.println("Visit on GitHub:\033[1;32m https://github.com/radio3network \x1b[0m");
+    Serial.println("");
     // load values in flash memory
     loadFlashValues();
     // load bluetooth
@@ -117,13 +121,11 @@ static void start(){
     // initial window
     createWindowHome();
     // create the terminal
-    //setupTerminal();
+    setupTerminal();
 }
 
 static void loopBlum(){
-
-
     lv_timer_handler();
-    //loopTerminal();
+    loopTerminal();
 }
 
