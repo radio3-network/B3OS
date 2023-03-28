@@ -7,9 +7,6 @@
 #include <WiFi.h>
 #include "esp_wifi.h"
 
-#include "SdFat.h"
-#include "sdios.h"
-
 #include <hardware/hardware.h>
 
 
@@ -26,6 +23,8 @@
 #include "blum_terminal.hpp"
 
 // Storage card
+#include "SdFat.h"
+#include "sdios.h"
 uint32_t cardSectorCount = 0;
 uint8_t  sectorBuffer[512];
 // SdCardFactory constructs and initializes the appropriate card.
@@ -33,8 +32,12 @@ SdCardFactory cardFactory;
 // Pointer to generic SD card.
 SdCard* m_card = nullptr;
 
+SdFat sd;
+
 #define SPI_CLOCK SD_SCK_MHZ(6)
 #define SD_CONFIG SdSpiConfig(TF_PIN_CS, DEDICATED_SPI, SPI_CLOCK)
+
+
 
 // Prototype to a function that will be called every time
 // when you press the enter key.
@@ -72,10 +75,21 @@ const char logo[] =
 
 void func_clear( char *args, Stream *response );
 void func_formatCard( char *args, Stream *response );
+void func_echo( char *args, Stream *response );
+void func_ls( char *args, Stream *response );
+void func_mkdir( char *args, Stream *response );
+void func_cd( char *args, Stream *response );
 
 Commander::API_t API_tree[] = {
+    // custom commands
     apiElement( "clear", "Clear the screen contents", func_clear),
     apiElement( "formatCard", "Format (erase/initialize) the memory card", func_formatCard),
+    apiElement( "echo", "Print a line of text", func_echo),
+    apiElement( "ls", "List files", func_ls),
+    apiElement( "mkdir", "Make a directory", func_mkdir),
+    apiElement( "cd", "Change directory", func_cd),
+
+    // built-in commands
     API_ELEMENT_MILLIS,
     API_ELEMENT_MICROS,
     API_ELEMENT_UPTIME,
@@ -102,23 +116,98 @@ void func_clear(char *args, Stream *response ){
   //response -> print("Clearing the screen!\r\n");
 }
 
-// similar to CLEAR function in Linux
-void func_formatCard(char *args, Stream *response ){
+// prints a line of text
+void func_echo(char *args, Stream *response ){
+  response -> println(args);
+}
+
+// prints a line of text
+void func_ls(char *args, Stream *response ){
+  File dir;
+  File file;
+
+  // open the current directory
+  if (!dir.openCwd()){
+    response -> println("Failed to open the directory");
+    return;
+  }
+
+  while (file.openNext(&dir, O_RDONLY)) {
+    char fileName[13];
+    size_t len = file.getName(fileName, sizeof(fileName));
+
+    if(file.isDirectory()){
+      response -> print(fileName);
+      response -> println("/");
+    }else{
+      response -> println(fileName);
+    }
+    file.close();
+  }
+}
+
+void func_mkdir(char *args, Stream *response ){
+  if (!sd.mkdir(args)) {
+    response -> println("Failed to create folder");
+  }
+}
+
+// change current working directory
+void func_cd(char *args, Stream *response) {
+  if (args == NULL) {
+    response->println("No directory specified");
+    return;
+  }
+
+  // open directory
+  File dir;
+  if (!dir.open(args)) {
+    response->println("Directory not found");
+    return;
+  }
+
+  // check if directory
+  if (!dir.isDirectory()) {
+    response->println("Not a directory");
+    dir.close();
+    return;
+  }
+
+  // change directory
+  if (!sd.chdir(args)) {
+    response->println("Failed to change directory");
+    dir.close();
+    return;
+  }
+
+  // close directory
+  dir.close();
+}
 
 
+void card_initialize(){
   // Select and initialize proper card driver.
   m_card = cardFactory.newCard(SD_CONFIG);
   if (!m_card || m_card->errorCode()) {
-    response -> println("Error initializing SD card.");
+    Serial.println("Error initializing card factory");
     return;
   }
 
   cardSectorCount = m_card->sectorCount();
   if (!cardSectorCount) {
-    response -> println("Get sector count failed.");
+    Serial.println("Get sector count failed.");
     return;
   }
 
+   if (!sd.begin(SD_CONFIG)) {
+    Serial.println("Error initializing storage card.");
+  }
+
+}
+
+// similar to CLEAR function in Linux
+void func_formatCard(char *args, Stream *response ){
+  
   ExFatFormatter exFatFormatter;
   FatFormatter fatFormatter;
 
@@ -133,20 +222,6 @@ void func_formatCard(char *args, Stream *response ){
   }
 
   response -> println("Storage card formatted successfully.");
-/*
-    if (!SD.begin(TF_PIN_CS)) {
-      response -> println("Error initializing SD card.");
-      return;
-    }
-
-    response -> println("Formatting storage card...");
-    
-   /* if (SD.format()) {
-      response -> println("Storage card formatted successfully.");
-    } else {
-      response -> println("Error formatting storage card.");
-    }
-*/
 }
 
 
@@ -196,6 +271,9 @@ void setupTerminal() {
   Serial.println( SERVER_PORT );
 
 
+  // Initialize the storage card
+  card_initialize();
+
   // There is an option to attach a debug channel to Commander.
   // It can be handy to find any problems during the initialization
   // phase. In this example we will use Serial for this.
@@ -216,38 +294,8 @@ void setupTerminal() {
   shell.begin( "root" );
 
 
-
-  //microbox.begin(&Params[0], hostname, true, historyBuf, 100);
-
-  // add the handler to run inside LVGL
-  //
-  //lv_timer_t * timer = lv_timer_create(loopTerminal2, 10,  NULL);
-  //lv_timer_ready(timer);
   
 }
 
-/*
-void executionFunction( char* command ){
-
-  if(strcmp(command,"clear")==0){
-    shell.clear();
-    return;
-  }
-  
-  if(strcmp(command,"pin")==0){
-    shell.setTerminalCharacterColor(Shellminator::BOLD, Shellminator::GREEN);
-    Serial.println("Writing to pin");
-    shell.setTerminalCharacterColor(Shellminator::REGULAR, Shellminator::WHITE);
-    return;
-  }
-
-  Serial.print( "'");
-  shell.setTerminalCharacterColor(Shellminator::BOLD, Shellminator::RED);
-  Serial.println( command );
-  Serial.print( "'");
-  shell.setTerminalCharacterColor(Shellminator::REGULAR, Shellminator::WHITE);
-  Serial.println(" is not a command");
-}
-*/
 
 #endif
