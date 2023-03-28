@@ -81,6 +81,7 @@ void func_mkdir( char *args, Stream *response );
 void func_cd( char *args, Stream *response );
 void func_rm( char *args, Stream *response );
 void func_touch( char *args, Stream *response );
+void func_reboot( char *args, Stream *response );
 
 Commander::API_t API_tree[] = {
     // custom commands
@@ -92,6 +93,7 @@ Commander::API_t API_tree[] = {
     apiElement( "cd", "Change directory", func_cd),
     apiElement( "rm", "Remove one file", func_rm),
     apiElement( "touch", "Create an empty file", func_touch),
+    apiElement( "reboot", "Reboots the device", func_reboot),
 
     // built-in commands
     API_ELEMENT_MILLIS,
@@ -119,6 +121,11 @@ void func_clear(char *args, Stream *response ){
   shell.clear();
 }
 
+// reboot the device
+void func_reboot(char *args, Stream *response ){
+  esp_restart();
+}
+
 // prints a line of text
 void func_echo(char *args, Stream *response ){
   response -> print(args);
@@ -143,6 +150,8 @@ String getPath(char *args){
   dir.openCwd();  
   String filename = args;
   
+  
+
   //String cwdPath = getFullPath(dir);
   
 

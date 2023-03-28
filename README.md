@@ -45,11 +45,18 @@ Licenses from third-party libraries and resources adopted by this project are ap
 
 # Thanks
 
-## Sunton for making available cheap and powerful boards
+This project is only possible due to the work and effort of many other projects and people.
+On this section we try to list them.
+
+
+## Espressif and Sunton
+For the incredibly powerful and affordable ESP32 boards
 + https://www.aliexpress.com/item/1005004502250619.html
++ https://www.espressif.com/
 
 
-## LVGL for making the GUI windows
+## LVGL
+For making modern GUI windows available for Arduino
 + https://lvgl.io/
 
 
