@@ -79,6 +79,8 @@ void func_echo( char *args, Stream *response );
 void func_ls( char *args, Stream *response );
 void func_mkdir( char *args, Stream *response );
 void func_cd( char *args, Stream *response );
+void func_rm( char *args, Stream *response );
+void func_touch( char *args, Stream *response );
 
 Commander::API_t API_tree[] = {
     // custom commands
@@ -88,6 +90,8 @@ Commander::API_t API_tree[] = {
     apiElement( "ls", "List files", func_ls),
     apiElement( "mkdir", "Make a directory", func_mkdir),
     apiElement( "cd", "Change directory", func_cd),
+    apiElement( "rm", "Remove one file", func_rm),
+    apiElement( "touch", "Create an empty file", func_touch),
 
     // built-in commands
     API_ELEMENT_MILLIS,
@@ -113,12 +117,12 @@ Commander::API_t API_tree[] = {
 // similar to CLEAR function in Linux
 void func_clear(char *args, Stream *response ){
   shell.clear();
-  //response -> print("Clearing the screen!\r\n");
 }
 
 // prints a line of text
 void func_echo(char *args, Stream *response ){
-  response -> println(args);
+  response -> print(args);
+  response -> print("\r\n");
 }
 
 // prints a line of text
@@ -138,19 +142,70 @@ void func_ls(char *args, Stream *response ){
 
     if(file.isDirectory()){
       response -> print(fileName);
-      response -> println("/");
+      response -> print("/");
+      response -> print("\r\n");
     }else{
-      response -> println(fileName);
+      response -> print(fileName);
+      response -> print("\r\n");
     }
     file.close();
   }
 }
+
+
+void func_touch(char *args, Stream *response) {
+  File dir;
+  if (args == NULL) {
+    response->println("No file name specified");
+    return;
+  }
+
+  dir.openCwd();
+  char folderName[13];
+  size_t len = dir.getName(folderName, sizeof(folderName));
+
+  // open file in write mode
+  File file = sd.open(String(folderName) + "/" + args, FILE_WRITE);
+  if (!file) {
+    response->println("Failed to create file");
+    return;
+  }
+
+  file.close();
+  response->println("File created");
+}
+
+
+
 
 void func_mkdir(char *args, Stream *response ){
   if (!sd.mkdir(args)) {
     response -> println("Failed to create folder");
   }
 }
+
+void func_rm(char *args, Stream *response ){
+  if (args == NULL) {
+    response->println("No file or folder specified");
+    return;
+  }
+  // get the current folder
+  File dir;
+  dir.openCwd();
+  char folderName[13];
+  size_t len = dir.getName(folderName, sizeof(folderName));
+  String path = String(folderName) + "/" + args;
+
+  // accept full paths
+  if(path.startsWith("/")){
+    path = args;
+  }
+
+  if (!sd.remove(path)) {
+    response -> println("Failed to remove file");
+  }
+}
+
 
 // change current working directory
 void func_cd(char *args, Stream *response) {
