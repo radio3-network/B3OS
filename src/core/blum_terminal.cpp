@@ -7,6 +7,11 @@
 #include <WiFi.h>
 #include "esp_wifi.h"
 
+#include "SdFat.h"
+#include "sdios.h"
+
+#include <hardware/hardware.h>
+
 
 /*
     Terminal that can be accessed from the wifi network
@@ -18,16 +23,22 @@
 #include "Commander-IO.hpp"
 #include "Commander-API-Commands.hpp"
 
+#include "blum_terminal.hpp"
 
-//#include <microBox.h>
+// Storage card
+uint32_t cardSectorCount = 0;
+uint8_t  sectorBuffer[512];
+// SdCardFactory constructs and initializes the appropriate card.
+SdCardFactory cardFactory;
+// Pointer to generic SD card.
+SdCard* m_card = nullptr;
+
+#define SPI_CLOCK SD_SCK_MHZ(6)
+#define SD_CONFIG SdSpiConfig(TF_PIN_CS, DEDICATED_SPI, SPI_CLOCK)
 
 // Prototype to a function that will be called every time
 // when you press the enter key.
 void executionFunction( char* command );
-
-
-#include "blum_terminal.hpp"
-
 
 // WiFi credentials.
 static const char* ssid     = "---___---";
@@ -50,18 +61,21 @@ Shellminator shell( &serverWifi//, executionFunction
 
 const char logo[] =
 
-"   _____ __         ____          _             __            \r\n"
-"  / ___// /_  ___  / / /___ ___  (_)___  ____ _/ /_____  _____\r\n"
-"  \\__ \\/ __ \\/ _ \\/ / / __ `__ \\/ / __ \\/ __ `/ __/ __ \\/ ___/\r\n"
-" ___/ / / / /  __/ / / / / / / / / / / / /_/ / /_/ /_/ / /    \r\n"
-"/____/_/ /_/\\___/_/_/_/ /_/ /_/_/_/ /_/\\__,_/\\__/\\____/_/     \r\n"
+"                 _  \r\n" 
+" ._ _.  _| o  _  _) \r\n" 
+" | (_| (_| | (_) _) \r\n" 
+
 "\r\n\033[0;37m"
 "\033[1;32m https://radio3.network\r\n\r\n"
 
 ;
 
+void func_clear( char *args, Stream *response );
+void func_formatCard( char *args, Stream *response );
 
 Commander::API_t API_tree[] = {
+    apiElement( "clear", "Clear the screen contents", func_clear),
+    apiElement( "formatCard", "Format (erase/initialize) the memory card", func_formatCard),
     API_ELEMENT_MILLIS,
     API_ELEMENT_MICROS,
     API_ELEMENT_UPTIME,
@@ -82,32 +96,69 @@ Commander::API_t API_tree[] = {
     API_ELEMENT_NOT
 };
 
-
-/*
-char historyBuf[100];
-char hostname[] = "esp32";
-
-PARAM_ENTRY Params[]=
-{
-  {"hostname", hostname, PARTYPE_STRING | PARTYPE_RW, sizeof(hostname), NULL, NULL, 0}, 
-  {NULL, NULL}
-};
-
-
-void loopTerminal2(lv_timer_t * timer) {
-  //shell.update();
-  microbox.cmdParser();
+// similar to CLEAR function in Linux
+void func_clear(char *args, Stream *response ){
+  shell.clear();
+  //response -> print("Clearing the screen!\r\n");
 }
+
+// similar to CLEAR function in Linux
+void func_formatCard(char *args, Stream *response ){
+
+
+  // Select and initialize proper card driver.
+  m_card = cardFactory.newCard(SD_CONFIG);
+  if (!m_card || m_card->errorCode()) {
+    response -> println("Error initializing SD card.");
+    return;
+  }
+
+  cardSectorCount = m_card->sectorCount();
+  if (!cardSectorCount) {
+    response -> println("Get sector count failed.");
+    return;
+  }
+
+  ExFatFormatter exFatFormatter;
+  FatFormatter fatFormatter;
+
+  // Format exFAT if larger than 32GB.
+  bool rtn = cardSectorCount > 67108864 ?
+  exFatFormatter.format(m_card, sectorBuffer, &Serial) :
+  fatFormatter.format(m_card, sectorBuffer, &Serial);
+
+  if (!rtn) {
+    response -> println("Error formatting storage card.");
+    return;
+  }
+
+  response -> println("Storage card formatted successfully.");
+/*
+    if (!SD.begin(TF_PIN_CS)) {
+      response -> println("Error initializing SD card.");
+      return;
+    }
+
+    response -> println("Formatting storage card...");
+    
+   /* if (SD.format()) {
+      response -> println("Storage card formatted successfully.");
+    } else {
+      response -> println("Error formatting storage card.");
+    }
 */
+}
+
+
+
+
 
 void loopTerminal() {
   shell.update();
-  //microbox.cmdParser();
 }
 
 
 void setupTerminal() {
-
 
   
  // Clear the terminal
