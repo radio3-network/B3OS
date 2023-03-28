@@ -88,8 +88,9 @@ void loop(){
     //loopBluetooth();
 
     // change the builtin led for fun
-    buildLedColorLoop();
+    //buildLedColorLoop();
     
+    /*
     int64_t time = esp_timer_get_time();
     
     // intervals of 1 second
@@ -106,5 +107,6 @@ void loop(){
         adjustBrightnessAutomatically();
     }
 
+*/
 
 }

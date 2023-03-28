@@ -34,3 +34,37 @@ You would likely use this library because:
 License: Apache-2.0
 
 Copyright (c) radio3.network
+
+
+# Legal
+
+This project is fully open source and delivered under the Apache version 2.0 license.
+
+Licenses from third-party libraries and resources adopted by this project are applicable and compatible with the Apache 2.0 license terms and conditions.
+
+
+# Thanks
+
+## Sunton for making available cheap and powerful boards
++ https://www.aliexpress.com/item/1005004502250619.html
+
+
+## LVGL for making the GUI windows
++ https://lvgl.io/
+
+
+## ESP32-SmartDisplay
+For making it possible and easy to write code
+for these Sunton boards.
++ https://github.com/rzeldent/esp32-smartdisplay
+
+
+## Shellminator
+Terminal library for accessing the device from
+either the WiFi or a serial cable.
++ https://github.com/dani007200964/Shellminator
+
+
+## Xila
+For the good conversations and perspective to serve as host for this project one day.
++ https://xila.dev/

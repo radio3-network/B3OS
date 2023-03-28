@@ -125,15 +125,34 @@ void func_echo(char *args, Stream *response ){
   response -> print("\r\n");
 }
 
+/*
+String getFullPath(File file) {
+  String fullPath = file.name();
+  while (file.parent()) {
+    file = file.getParent();
+    char fileName[13];
+    size_t len = file.getName(fileName, sizeof(fileName));
+    fullPath =  String(fileName)+ "/" + fullPath;
+  }
+  return fullPath;
+}
+*/
 
 String getPath(char *args){
   File dir;
-  dir.openCwd();
+  dir.openCwd();  
+  String filename = args;
+  
+  //String cwdPath = getFullPath(dir);
+  
+
   char folderName[13];
   size_t len = dir.getName(folderName, sizeof(folderName));
-  String filename = args;
   String path = "/" + String(folderName) + "/" + filename;
   
+  //String path = cwdPath + "/" + filename;
+  
+
   // accept full paths
   if(filename.startsWith("/")){
     path = filename;
@@ -219,7 +238,7 @@ void func_cd(char *args, Stream *response) {
   String path = getPath(args);
   // open directory
   File dir;
-  if (!dir.open(path)) {
+  if (!dir.open(args)) {
     response->println("Directory not found");
     return;
   }
