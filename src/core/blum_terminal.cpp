@@ -125,6 +125,22 @@ void func_echo(char *args, Stream *response ){
   response -> print("\r\n");
 }
 
+
+String getPath(char *args){
+  File dir;
+  dir.openCwd();
+  char folderName[13];
+  size_t len = dir.getName(folderName, sizeof(folderName));
+  String filename = args;
+  String path = "/" + String(folderName) + "/" + filename;
+  
+  // accept full paths
+  if(filename.startsWith("/")){
+    path = filename;
+  }
+  return path;
+}
+
 // prints a line of text
 void func_ls(char *args, Stream *response ){
   File dir;
@@ -153,21 +169,18 @@ void func_ls(char *args, Stream *response ){
 }
 
 
+
 void func_touch(char *args, Stream *response) {
-  File dir;
   if (args == NULL) {
     response->println("No file name specified");
     return;
   }
 
-  dir.openCwd();
-  char folderName[13];
-  size_t len = dir.getName(folderName, sizeof(folderName));
-
+  String path = getPath(args);
   // open file in write mode
-  File file = sd.open(String(folderName) + "/" + args, FILE_WRITE);
+  File file = sd.open(path, FILE_WRITE);
   if (!file) {
-    response->println("Failed to create file");
+    response->println("Failed to create file: " + path);
     return;
   }
 
@@ -179,7 +192,8 @@ void func_touch(char *args, Stream *response) {
 
 
 void func_mkdir(char *args, Stream *response ){
-  if (!sd.mkdir(args)) {
+  String path = getPath(args);
+  if (!sd.mkdir(path)) {
     response -> println("Failed to create folder");
   }
 }
@@ -189,18 +203,7 @@ void func_rm(char *args, Stream *response ){
     response->println("No file or folder specified");
     return;
   }
-  // get the current folder
-  File dir;
-  dir.openCwd();
-  char folderName[13];
-  size_t len = dir.getName(folderName, sizeof(folderName));
-  String path = String(folderName) + "/" + args;
-
-  // accept full paths
-  if(path.startsWith("/")){
-    path = args;
-  }
-
+  String path = getPath(args);
   if (!sd.remove(path)) {
     response -> println("Failed to remove file");
   }
@@ -213,10 +216,10 @@ void func_cd(char *args, Stream *response) {
     response->println("No directory specified");
     return;
   }
-
+  String path = getPath(args);
   // open directory
   File dir;
-  if (!dir.open(args)) {
+  if (!dir.open(path)) {
     response->println("Directory not found");
     return;
   }

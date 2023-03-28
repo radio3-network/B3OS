@@ -2,7 +2,6 @@
 #define BLUM_TERMINAL_HPP
 
 #include <WiFi.h>
-#include <microBox.h>
 
 extern WiFiServer serverWifi;
 
