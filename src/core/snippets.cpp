@@ -12,6 +12,18 @@ Simple snippets for every day programming
     lv_label_set_text(statusTextLabel, key);
 
 
+
+  // convert a char to string and compare the first character
+  char* args = "/test"; // example command line argument
+  String argString = String(args); // convert char* to String
+  if (argString.startsWith("/")) { // check if string starts with "/"
+    Serial.println("The argument starts with '/'");
+  } else {
+    Serial.println("The argument does not start with '/'");
+  }
+
+
+
     // get the state of the switch from EEPROM memory
   if (wifi_enabled != nullptr) {
     if(strcmp(wifi_enabled, "ON") == 0){

@@ -33,6 +33,7 @@ SdCardFactory cardFactory;
 SdCard* m_card = nullptr;
 
 SdFat sd;
+String currentPath = "/";
 
 #define SPI_CLOCK SD_SCK_MHZ(6)
 #define SD_CONFIG SdSpiConfig(TF_PIN_CS, DEDICATED_SPI, SPI_CLOCK)
@@ -123,7 +124,18 @@ void func_clear(char *args, Stream *response ){
 
 // reboot the device
 void func_reboot(char *args, Stream *response ){
-  esp_restart();
+
+    response -> println("Reboot now? (Y/n)");
+    while( !response -> available() ){
+         // Waiting for user input
+    }
+
+    char c = response -> read();
+
+    if( c == 'y' || c == 'Y' ){
+        response -> println("System is rebooting NOW");
+        esp_restart();
+    }
 }
 
 // prints a line of text
@@ -132,42 +144,59 @@ void func_echo(char *args, Stream *response ){
   response -> print("\r\n");
 }
 
-/*
-String getFullPath(File file) {
-  String fullPath = file.name();
-  while (file.parent()) {
-    file = file.getParent();
-    char fileName[13];
-    size_t len = file.getName(fileName, sizeof(fileName));
-    fullPath =  String(fileName)+ "/" + fullPath;
-  }
-  return fullPath;
-}
-*/
 
+/**
+ * Returns the canonical path for a char with a file name
+ */
 String getPath(char *args){
-  File dir;
-  dir.openCwd();  
-  String filename = args;
-  
-  
-
-  //String cwdPath = getFullPath(dir);
-  
-
-  char folderName[13];
-  size_t len = dir.getName(folderName, sizeof(folderName));
-  String path = "/" + String(folderName) + "/" + filename;
-  
-  //String path = cwdPath + "/" + filename;
-  
-
-  // accept full paths
-  if(filename.startsWith("/")){
-    path = filename;
+  // convert args to String
+  String argString = String(args);
+  // canonical path
+  if(argString.startsWith("/")){
+    return argString;
+  }else{
+    return currentPath + argString;    
   }
-  return path;
 }
+
+
+void func_touch(char *args, Stream *response) {
+  if (args == NULL) {
+    response->println("No file name specified");
+    return;
+  }
+
+  String path = getPath(args);
+  // open file in write mode
+  File file = sd.open(path, FILE_WRITE);
+  if (!file) {
+    response->println("Failed to create file: " + path);
+    return;
+  }
+
+  file.close();
+  response->println("File created");
+}
+
+
+void func_mkdir(char *args, Stream *response ){
+  String path = getPath(args);
+  if (!sd.mkdir(path)) {
+    response -> println("Failed to create folder");
+  }
+}
+
+void func_rm(char *args, Stream *response ){
+  if (args == NULL) {
+    response->println("No file or folder specified");
+    return;
+  }
+  String path = getPath(args);
+  if (!sd.remove(path)) {
+    response -> println("Failed to remove file");
+  }
+}
+
 
 // prints a line of text
 void func_ls(char *args, Stream *response ){
@@ -194,48 +223,55 @@ void func_ls(char *args, Stream *response ){
     }
     file.close();
   }
+  dir.close();
 }
 
 
+int countForwardSlashes(String str) {
+  int count = 0;
 
-void func_touch(char *args, Stream *response) {
-  if (args == NULL) {
-    response->println("No file name specified");
-    return;
+  for (int i = 0; i < str.length(); i++) {
+    if (str.charAt(i) == '/') {
+      count++;
+    }
   }
 
-  String path = getPath(args);
-  // open file in write mode
-  File file = sd.open(path, FILE_WRITE);
-  if (!file) {
-    response->println("Failed to create file: " + path);
-    return;
-  }
-
-  file.close();
-  response->println("File created");
+  return count;
 }
 
+String getParentFolder(String currentPathEdited) {
+  String parentFolder = "";
 
-
-
-void func_mkdir(char *args, Stream *response ){
-  String path = getPath(args);
-  if (!sd.mkdir(path)) {
-    response -> println("Failed to create folder");
+  int countSlashes = countForwardSlashes(currentPathEdited);
+  // we are going to the root
+  if(countSlashes == 2){
+    return "/";
   }
+
+  // Find the index of the last occurrence of '/'
+  int lastSlashIndex = currentPathEdited.lastIndexOf('/');
+
+  // Check if the last folder is not the root folder
+  if (lastSlashIndex > 0) {
+    // Get the parent folder by extracting the substring up to the last '/'
+    parentFolder = currentPathEdited.substring(0, lastSlashIndex);
+
+    // Find the index of the previous-to-last occurrence of '/'
+    lastSlashIndex = parentFolder.lastIndexOf('/');
+
+    // Check if the parent folder is not the root folder
+    if (lastSlashIndex > 0) {
+      // Get the grandparent folder by extracting the substring up to the previous-to-last '/'
+      parentFolder = parentFolder.substring(0, lastSlashIndex + 1);
+    } else {
+      // If the parent folder is the root folder, append a '/' character
+      parentFolder += '/';
+    }
+  }
+
+  return parentFolder;
 }
 
-void func_rm(char *args, Stream *response ){
-  if (args == NULL) {
-    response->println("No file or folder specified");
-    return;
-  }
-  String path = getPath(args);
-  if (!sd.remove(path)) {
-    response -> println("Failed to remove file");
-  }
-}
 
 
 // change current working directory
@@ -244,10 +280,15 @@ void func_cd(char *args, Stream *response) {
     response->println("No directory specified");
     return;
   }
-  String path = getPath(args);
+
+  String argString = String(args);
+  if(argString.equals("..")){
+    argString = getParentFolder(currentPath);
+  }
+
   // open directory
   File dir;
-  if (!dir.open(args)) {
+  if (!dir.open(argString.c_str())) {
     response->println("Directory not found");
     return;
   }
@@ -260,12 +301,21 @@ void func_cd(char *args, Stream *response) {
   }
 
   // change directory
-  if (!sd.chdir(args)) {
+  if (!sd.chdir(argString.c_str())) {
     response->println("Failed to change directory");
     dir.close();
     return;
   }
 
+  // update the current path
+  if (argString.startsWith("/")) { // check if string starts with "/"
+    currentPath = argString;
+  } else {
+    // always add "/" at the end
+    currentPath = currentPath  + argString + "/";
+  }
+
+  response->println("Current path: " + currentPath);
   // close directory
   dir.close();
 }
@@ -320,8 +370,6 @@ void loopTerminal() {
 
 
 void setupTerminal() {
-
-  
  // Clear the terminal
   shell.clear();
 
@@ -375,12 +423,11 @@ void setupTerminal() {
 
   shell.attachCommander( &commander );
 
-
   // initialize shell object.
   shell.begin( "root" );
 
-
-  
+  // setup the current path
+  currentPath = "/";
 }
 
 
