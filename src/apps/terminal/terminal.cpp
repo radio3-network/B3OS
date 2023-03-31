@@ -1,6 +1,6 @@
 
-#ifndef BLUM_TERMINAL
-#define BLUM_TERMINAL
+#ifndef TERMINAL_CPP
+#define TERMINAL_CPP
 
 
 #include <lvgl.h>
@@ -11,7 +11,7 @@
 
 
 /*
-    Terminal that can be accessed from the wifi network
+  Terminal that can be accessed from the wifi network
 */
 #include <Shellminator.hpp>
 #include "Shellminator-IO.hpp"
@@ -20,11 +20,12 @@
 #include "Commander-IO.hpp"
 #include "Commander-API-Commands.hpp"
 
-#include "blum_terminal.hpp"
+#include "terminal.hpp"
 
 // Storage card
 #include "SdFat.h"
 #include "sdios.h"
+
 uint32_t cardSectorCount = 0;
 uint8_t  sectorBuffer[512];
 // SdCardFactory constructs and initializes the appropriate card.
@@ -70,52 +71,18 @@ const char logo[] =
 " | (_| (_| | (_) _) \r\n" 
 
 "\r\n\033[0;37m"
-"\033[1;32m https://radio3.network\r\n\r\n"
+"\033[1;32m https://radio3.network\r\n\r\n";
 
-;
 
-void func_clear( char *args, Stream *response );
-void func_formatCard( char *args, Stream *response );
-void func_echo( char *args, Stream *response );
-void func_ls( char *args, Stream *response );
-void func_mkdir( char *args, Stream *response );
-void func_cd( char *args, Stream *response );
-void func_rm( char *args, Stream *response );
-void func_touch( char *args, Stream *response );
-void func_reboot( char *args, Stream *response );
-
-Commander::API_t API_tree[] = {
-    // custom commands
-    apiElement( "clear", "Clear the screen contents", func_clear),
-    apiElement( "formatCard", "Format (erase/initialize) the memory card", func_formatCard),
-    apiElement( "echo", "Print a line of text", func_echo),
-    apiElement( "ls", "List files", func_ls),
-    apiElement( "mkdir", "Make a directory", func_mkdir),
-    apiElement( "cd", "Change directory", func_cd),
-    apiElement( "rm", "Remove one file", func_rm),
-    apiElement( "touch", "Create an empty file", func_touch),
-    apiElement( "reboot", "Reboots the device", func_reboot),
-
-    // built-in commands
-    API_ELEMENT_MILLIS,
-    API_ELEMENT_MICROS,
-    API_ELEMENT_UPTIME,
-    API_ELEMENT_PINMODE,
-    API_ELEMENT_DIGITALWRITE,
-    API_ELEMENT_DIGITALREAD,
-    API_ELEMENT_ANALOGREAD,
-    API_ELEMENT_IPCONFIG,
-    API_ELEMENT_WIFISTAT,
-    API_ELEMENT_WIFISCAN,
-    API_ELEMENT_CONFIGTIME,
-    API_ELEMENT_DATETIME,
-    API_ELEMENT_NEOFETCH,
-    API_ELEMENT_SIN,
-    API_ELEMENT_COS,
-    API_ELEMENT_ABS,
-    API_ELEMENT_RANDOM,
-    API_ELEMENT_NOT
-};
+// delays execution for some seconds
+void func_wait(char *args, Stream *response ){
+  if (args == NULL) {
+    response->println("No milliseconds specified");
+    return;
+  }
+  uint32_t value = strtoul(args, NULL, 10);
+  delay(value);
+}
 
 // similar to CLEAR function in Linux
 void func_clear(char *args, Stream *response ){
@@ -168,7 +135,7 @@ void func_touch(char *args, Stream *response) {
 
   String path = getPath(args);
   // open file in write mode
-  File file = sd.open(path, FILE_WRITE);
+  File32 file = sd.open(path, FILE_WRITE);
   if (!file) {
     response->println("Failed to create file: " + path);
     return;
@@ -200,8 +167,8 @@ void func_rm(char *args, Stream *response ){
 
 // prints a line of text
 void func_ls(char *args, Stream *response ){
-  File dir;
-  File file;
+  File32 dir;
+  File32 file;
 
   // open the current directory
   if (!dir.openCwd()){
@@ -210,8 +177,9 @@ void func_ls(char *args, Stream *response ){
   }
 
   while (file.openNext(&dir, O_RDONLY)) {
-    char fileName[13];
-    size_t len = file.getName(fileName, sizeof(fileName));
+    char fileName[255];
+    size_t len = file.getName8(fileName, sizeof(fileName));
+
 
     if(file.isDirectory()){
       response -> print(fileName);
@@ -235,7 +203,6 @@ int countForwardSlashes(String str) {
       count++;
     }
   }
-
   return count;
 }
 
@@ -282,27 +249,37 @@ void func_cd(char *args, Stream *response) {
   }
 
   String argString = String(args);
+
+  // handle special cases
   if(argString.equals("..")){
     argString = getParentFolder(currentPath);
   }
 
+  if(argString.equals("../")){
+    String parentFolder = getParentFolder(currentPath);
+    argString = argString.substring(2, argString.length());
+    argString = parentFolder + argString;
+  }
+
+
+
   // open directory
-  File dir;
-  if (!dir.open(argString.c_str())) {
-    response->println("Directory not found");
+  File32 dir;
+  if (!dir.open(argString.c_str(), O_RDONLY)) {
+    response->println("Directory not found: " + argString);
     return;
   }
 
   // check if directory
   if (!dir.isDirectory()) {
-    response->println("Not a directory");
+    response->println("Not a directory: " + argString);
     dir.close();
     return;
   }
 
   // change directory
   if (!sd.chdir(argString.c_str())) {
-    response->println("Failed to change directory");
+    response->println("Failed to change directory: " + argString);
     dir.close();
     return;
   }
@@ -360,6 +337,42 @@ void func_formatCard(char *args, Stream *response ){
   response -> println("Storage card formatted successfully.");
 }
 
+
+
+Commander::API_t API_tree[] = {
+    // custom commands
+    apiElement( "clear", "Clear the screen contents", func_clear),
+    apiElement( "formatCard", "Format (erase/initialize) the memory card", func_formatCard),
+    apiElement( "echo", "Print a line of text", func_echo),
+    apiElement( "ls", "List files", func_ls),
+    apiElement( "mkdir", "Make a directory", func_mkdir),
+    apiElement( "cd", "Change directory", func_cd),
+    apiElement( "rm", "Remove one file", func_rm),
+    apiElement( "touch", "Create an empty file", func_touch),
+    apiElement( "reboot", "Reboots the device", func_reboot),
+    apiElement( "wait", "Wait a number of milliseconds", func_wait),
+
+
+    // built-in commands
+    API_ELEMENT_MILLIS,
+    API_ELEMENT_MICROS,
+    API_ELEMENT_UPTIME,
+    API_ELEMENT_PINMODE,
+    API_ELEMENT_DIGITALWRITE,
+    API_ELEMENT_DIGITALREAD,
+    API_ELEMENT_ANALOGREAD,
+    API_ELEMENT_IPCONFIG,
+    API_ELEMENT_WIFISTAT,
+    API_ELEMENT_WIFISCAN,
+    API_ELEMENT_CONFIGTIME,
+    API_ELEMENT_DATETIME,
+    API_ELEMENT_NEOFETCH,
+    API_ELEMENT_SIN,
+    API_ELEMENT_COS,
+    API_ELEMENT_ABS,
+    API_ELEMENT_RANDOM,
+    API_ELEMENT_NOT
+};
 
 
 

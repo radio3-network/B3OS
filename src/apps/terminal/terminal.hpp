@@ -1,5 +1,5 @@
-#ifndef BLUM_TERMINAL_HPP
-#define BLUM_TERMINAL_HPP
+#ifndef TERMINAL_HPP
+#define TERMINAL_HPP
 
 #include <WiFi.h>
 
