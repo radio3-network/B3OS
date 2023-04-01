@@ -6,6 +6,7 @@
 #include <lvgl.h>
 //#include "bluetooth/bluetooth.cpp"
 #include "bluetooth/TerminalBluetooth.cpp"
+#include "wifi/module_wifi.hpp"
 
 
 

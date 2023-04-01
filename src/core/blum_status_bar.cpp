@@ -64,7 +64,7 @@ static void buildStatusBar() {
   lv_obj_align(statusTextLabel, LV_ALIGN_LEFT_MID, 28, 7);
 
   // wifi icon
-  if(enabledWifi){
+  if(wifiEnabled){
     iconWifiCreate();
   }
 

@@ -41,30 +41,27 @@ static StringArray *indexData;
 // settings saved on flash
 
 static Preferences preferences;
-static const char* NAMESPACE = "internal";
+static const char* NAMESPACE_GENERIC = "internal";
 
+// globals for hardware modules
 static const char*  KEY_WIFI_ENABLED = "WIFI_ENABLED";
 static const char*  KEY_WIFI_SSID = "WIFI_SSID";
 static const char*  KEY_WIFI_PASSWORD = "WIFI_PASSWORD";
 
-static const char* wifi_ssid = NULL;
-static const char* wifi_password = NULL;
+static String wifi_ssid = "";
+static String wifi_password = "";
+#define SERVER_PORT 23
   
 
+static boolean wifiEnabled = false;
 
 
-
-
-static boolean enabledWifi = false;
 static lv_obj_t * switchWifi = NULL;
 
 
 // hardware-specific definitions
 static int screen_width = 320;
 static int screen_height = 240;
-
-
-//static int serial_port_speed = 115200;
 
 
 // internal settings

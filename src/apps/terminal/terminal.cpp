@@ -7,10 +7,11 @@
 #include <WiFi.h>
 #include "esp_wifi.h"
 
+#include "core/blum_global.h"
+#include "hardware/wifi/module_wifi.hpp"
 
-/*
-  Terminal that can be accessed from the wifi network
-*/
+//  Terminal that can be accessed from the wifi network
+
 #include <Shellminator.hpp>
 #include "Shellminator-IO.hpp"
 
@@ -28,8 +29,6 @@ static const char* ssid     = "---___---";
 static const char* password = "vodafone";
 
 // Create an instance of the server.
-// It will be available on port 23.
-#define SERVER_PORT 23
 
 
 // Define serverWifi here in only one source file
@@ -92,11 +91,18 @@ Commander::API_t API_tree[] = {
 
 
 void loopTerminal() {
+  if(isWiFiConnected() == false){
+    return;
+  }
   shell.update();
 }
 
 
 void setupTerminal() {
+  if(isWiFiConnected() == false){
+    return;
+  }
+
  // Clear the terminal
   shell.clear();
 
@@ -106,30 +112,9 @@ void setupTerminal() {
   // Print start message
   Serial.println( "Program begin..." );
 
-  // WiFi configuration section
-  Serial.print( "Connect to  WiFi: " );
-  Serial.print( ssid );
-
-  WiFi.mode( WIFI_STA );
-  WiFi.setSleep(WIFI_PS_NONE);
-  WiFi.begin( ssid, password );
-
-  while( WiFi.status() != WL_CONNECTED ){
-
-    delay( 1000 );
-    Serial.print( "." );
-
-  }
 
   shell.beginServer();
-
   Serial.println( " [ OK ]" );
-
-  Serial.println( "Connected!" );
-  Serial.print( "Device IP: " );
-  Serial.print( WiFi.localIP() );
-  Serial.print( " at port: " );
-  Serial.println( SERVER_PORT );
 
 
   // Initialize the storage card

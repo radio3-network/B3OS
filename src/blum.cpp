@@ -74,13 +74,14 @@ x internal RGB led effects (e.g. breathing)
 
 
 static void loadFlashValues(){
-    preferences.begin(NAMESPACE, false);
+    /*
+    preferences.begin(NAMESPACE_GENERIC, false);
     // WIFI
     enabledWifi = preferences.getBool(KEY_WIFI_ENABLED, false);
     //wifi_ssid = TextKeyValueStore::get(KEY_WIFI_SSID);
     //wifi_password = TextKeyValueStore::get(KEY_WIFI_PASSWORD);
     preferences.end();
-
+    */
  
 }
 
@@ -106,6 +107,8 @@ static void start(){
     Serial.println("");
     // load values in flash memory
     loadFlashValues();
+    // load wifi
+    wifiStart();
     // load bluetooth
     //setupBluetooth();
     // clear screen and events

@@ -12,7 +12,9 @@ static bool scan_done = false;
 
 #define DEFAULT_SCAN_LIST_SIZE 30
 
+  /*
 static wifi_ap_record_t getWifiNetworks(){
+
     // based on https://github.com/espressif/esp-idf/blob/master/examples/wifi/scan/main/scan.c
     esp_netif_init();
     esp_event_loop_create_default();
@@ -37,19 +39,21 @@ static wifi_ap_record_t getWifiNetworks(){
 
     esp_wifi_stop;
     return *ap_info;
+   
 }
+ */
 
 static void btn_event_switch(lv_event_t *e){
-  enabledWifi = lv_obj_has_state(switchWifi, LV_STATE_CHECKED);
+  wifiEnabled = lv_obj_has_state(switchWifi, LV_STATE_CHECKED);
 
   // write to flash memory
-  preferences.begin(NAMESPACE, false);
-  preferences.putBool(KEY_WIFI_ENABLED, enabledWifi);
+  preferences.begin(NAMESPACE_GENERIC, false);
+  preferences.putBool(KEY_WIFI_ENABLED, wifiEnabled);
   preferences.end();
 
   // send a debug message
   if(debug){
-   if(enabledWifi){
+   if(wifiEnabled){
       iconWifiCreate();
       Serial.println("Wifi: Turn ON");
    }else{
@@ -82,7 +86,7 @@ static void createWindowWifi(){
   switchWifi = lv_switch_create(cont);
 
   // setup the initial state
-  if(enabledWifi){
+  if(wifiEnabled){
     lv_obj_add_state(switchWifi, LV_STATE_CHECKED);
   }else{
     lv_obj_add_state(switchWifi, LV_STATE_DEFAULT);
@@ -108,6 +112,7 @@ static void createWindowWifi(){
   // TODO this only works on ESP devices
   // TODO this blocks the whole processing, add it as a thread
   
+  /*
     esp_netif_init();
     esp_event_loop_create_default();
     esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
@@ -142,7 +147,7 @@ static void createWindowWifi(){
     }
 
     esp_wifi_stop;
-
+*/
   // the selected wifi network is on the top
 
 
