@@ -210,13 +210,15 @@ void func_ls(char *args, Stream *response ){
     char fileName[255];
     size_t len = file.getName8(fileName, sizeof(fileName));
 
-    // Check if fileName contains a space character
-    if (strchr(fileName, ' ') != NULL) {
+
+  // Check if fileName contains a space character
+  if (strchr(fileName, ' ') != NULL) {
     // If it does, modify the variable to contain enclosing quotes
-      fileName[0] = '"';
-      fileName[len] = '"';
-      fileName[len + 1] = '\0';
-}
+    memmove(&fileName[1], &fileName[0], len + 1); // Shift the string to make space for the leading quote
+    fileName[0] = '"';
+    fileName[len + 1] = '"';
+    fileName[len + 2] = '\0';
+  }
 
     if(file.isDirectory()){
       shell.setTerminalCharacterColor(response, 1, 34);
