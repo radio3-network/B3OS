@@ -78,6 +78,14 @@ void lvgl_touch_read(lv_indev_drv_t *drv, lv_indev_data_t *data)
   data->state = xpt2046_read_xy(&last_x, &last_y) ? LV_INDEV_STATE_PR : LV_INDEV_STATE_RELEASED;
   data->point.x = last_x;
   data->point.y = last_y;
+
+/*
+  Serial.print("Touch: ");
+  Serial.print(last_x);
+  Serial.print(",");
+  Serial.println(last_y);
+*/
+  
   // log_d("Touch: (%d,%d)", last_x, last_y);
 }
 
