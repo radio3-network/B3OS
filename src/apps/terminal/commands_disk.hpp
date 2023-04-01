@@ -19,6 +19,7 @@ extern void func_touch(char *args, Stream *response);
 extern void func_mkdir(char *args, Stream *response );
 extern void func_rm(char *args, Stream *response );
 extern void func_ls(char *args, Stream *response );
+extern void func_ll(char *args, Stream *response );
 extern String getParentFolder(String currentPathEdited);
 extern void func_cd(char *args, Stream *response);
 
