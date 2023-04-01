@@ -123,6 +123,78 @@ void func_rm(char *args, Stream *response ){
 }
 
 
+// Helper function to zero-pad a number to two digits
+String zeroPad(int n) {
+  if (n < 10) {
+    return "0" + String(n);
+  } else {
+    return String(n);
+  }
+}
+
+
+String getModifyDateTime(FatFile file) {
+  uint16_t date, time;
+  if (!file.getModifyDateTime(&date, &time)) {
+    return ""; // Return empty string on error
+  }
+
+  // Extract year, month, and day from the date
+  uint16_t year = ((date >> 9) & 0x7F) + 1980;
+  uint8_t month = (date >> 5) & 0x0F;
+  uint8_t day = date & 0x1F;
+
+  // Extract hour, minute, and second from the time
+  uint8_t hour = (time >> 11) & 0x1F;
+  uint8_t minute = (time >> 5) & 0x3F;
+  uint8_t second = (time & 0x1F) * 2;
+
+  // Format the date and time as a string
+  return String(year) + "-" + zeroPad(month) + "-" + zeroPad(day) + " " +
+         zeroPad(hour) + ":" + zeroPad(minute) + ":" + zeroPad(second);
+}
+
+
+
+// prints a line of text
+void func_ll(char *args, Stream *response ){
+  File32 dir;
+  File32 file;
+
+  // open the current directory
+  if (!dir.openCwd()){
+    response -> println("Failed to open the directory");
+    return;
+  }
+
+  while (file.openNext(&dir, O_RDONLY)) {
+    char fileName[255];
+    size_t len = file.getName8(fileName, sizeof(fileName));
+
+
+    String time = getModifyDateTime(file);
+    response -> print(time + " ");
+
+    if(file.isDirectory()){
+
+      // \033[0;37m
+      // \033[1;32m 
+      
+      // 34 == blue, 37 = white, 32 = green
+      shell.setTerminalCharacterColor(response, 1, 34);
+      response -> print(fileName);
+      response -> print("/");
+      shell.setTerminalCharacterColor(response, 0, 37);
+      response -> print("\r\n");
+    }else{
+      response -> print(fileName);
+      response -> print("\r\n");
+    }
+    file.close();
+  }
+  dir.close();
+}
+
 // prints a line of text
 void func_ls(char *args, Stream *response ){
   File32 dir;
@@ -138,19 +210,30 @@ void func_ls(char *args, Stream *response ){
     char fileName[255];
     size_t len = file.getName8(fileName, sizeof(fileName));
 
+    // Check if fileName contains a space character
+    if (strchr(fileName, ' ') != NULL) {
+    // If it does, modify the variable to contain enclosing quotes
+      fileName[0] = '"';
+      fileName[len] = '"';
+      fileName[len + 1] = '\0';
+}
 
     if(file.isDirectory()){
+      shell.setTerminalCharacterColor(response, 1, 34);
       response -> print(fileName);
       response -> print("/");
-      response -> print("\r\n");
+      shell.setTerminalCharacterColor(response, 0, 37);
+      response -> print(" ");
     }else{
       response -> print(fileName);
-      response -> print("\r\n");
+      response -> print(" ");
     }
     file.close();
   }
   dir.close();
 }
+
+
 
 
 int countForwardSlashes(String str) {
