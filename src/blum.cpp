@@ -7,29 +7,29 @@
 #include "core/blum_navigation.h"
 #include "apps/blum_app_home.h"
 #include "apps/blum_app_settings.h"
-#include "apps/blum_app_wifi.h"
+#include "hardware/wifi/blum_app_wifi.h"
 
 
 
 /*
 
-██████╗ ██╗     ██╗   ██╗███████╗███╗   ███╗ ██████╗██╗  ██╗███████╗███╗   ██╗
-██╔══██╗██║     ██║   ██║██╔════╝████╗ ████║██╔════╝██║  ██║██╔════╝████╗  ██║
-██████╔╝██║     ██║   ██║█████╗  ██╔████╔██║██║     ███████║█████╗  ██╔██╗ ██║
-██╔══██╗██║     ██║   ██║██╔══╝  ██║╚██╔╝██║██║     ██╔══██║██╔══╝  ██║╚██╗██║
-██████╔╝███████╗╚██████╔╝███████╗██║ ╚═╝ ██║╚██████╗██║  ██║███████╗██║ ╚████║
-╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝
-                                                                              
- ██████╗ ██╗   ██╗██╗                                                         
-██╔════╝ ██║   ██║██║                                                         
-██║  ███╗██║   ██║██║                                                         
-██║   ██║██║   ██║██║                                                         
-╚██████╔╝╚██████╔╝██║                                                         
- ╚═════╝  ╚═════╝ ╚═╝                                                         
-                                                                                           
+ 
+──▒▒▒▒▒▒───▄████▄
+─▒─▄▒─▄▒──███▄█▀
+─▒▒▒▒▒▒▒─▐████──█─█
+─▒▒▒▒▒▒▒──█████▄
+─▒─▒─▒─▒───▀████▀
 
-The Blümchen GUI is a set of LVGL-based methods
-for creating graphical dialogs without trouble.
+███████████████████████
+█▄─▄─▀█▄▄▄░█─▄▄─█─▄▄▄▄█
+██─▄─▀██▄▄░█─██─█▄▄▄▄─█
+▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▀▄▄▄▄▄▀
+
+version 1.0.1
+
+
+
+The B3 Operating System for Arduino.
 
 There is an example on the setup() method to help you
 getting started with the syntax. You would likely use
@@ -74,14 +74,14 @@ x internal RGB led effects (e.g. breathing)
 
 
 static void loadFlashValues(){
-    /*
+    
     preferences.begin(NAMESPACE_GENERIC, false);
     // WIFI
-    enabledWifi = preferences.getBool(KEY_WIFI_ENABLED, false);
+    wifiEnabled = preferences.getBool(KEY_WIFI_ENABLED, false);
     //wifi_ssid = TextKeyValueStore::get(KEY_WIFI_SSID);
     //wifi_password = TextKeyValueStore::get(KEY_WIFI_PASSWORD);
     preferences.end();
-    */
+    
  
 }
 
@@ -124,7 +124,7 @@ static void start(){
     // initial window
     createWindowHome();
     // create the terminal
-    setupTerminal();
+    //setupTerminal();
 }
 
 static void loopBlum(){

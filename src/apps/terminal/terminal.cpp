@@ -23,13 +23,7 @@
 #include "commands_internal.hpp"
 #include "commands_disk.hpp"
 
-
-// WiFi credentials.
-static const char* ssid     = "---___---";
-static const char* password = "vodafone";
-
-// Create an instance of the server.
-
+boolean hasWiFiShellStarted = false;
 
 // Define serverWifi here in only one source file
 WiFiServer serverWifi( SERVER_PORT );
@@ -42,15 +36,21 @@ Shellminator shell(
   &serverWifi//, executionFunction
   );
 
-const char logo[] =
+const char logo1[] =
 
-"                 _  \r\n" 
-" ._ _.  _| o  _  _) \r\n" 
-" | (_| (_| | (_) _) \r\n" 
-
-"\r\n\033[0;37m"
-"\033[1;32m https://radio3.network\r\n\r\n";
-
+"                           \r\n"
+" ──▒▒▒▒▒▒───▄████▄         \r\n"
+" ─▒─▄▒─▄▒──███▄█▀          \r\n"
+" ─▒▒▒▒▒▒▒─▐████──█─█       \r\n"
+" ─▒▒▒▒▒▒▒──█████▄          \r\n"
+" ─▒─▒─▒─▒───▀████▀         \r\n"
+"                           \r\n"
+" ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   \r\n"
+" █▄─▄─▀█▄▄▄░█─▄▄─█─▄▄▄▄█   \r\n"
+" ██─▄─▀██▄▄░█─██─█▄▄▄▄─█   \r\n"
+" █▄▄▄▄██▄▄▄▄█▄▄▄▄█▄▄▄▄▄█   \r\n"
+"                           \r\n"
+;
 
 
 Commander::API_t API_tree[] = {
@@ -94,6 +94,11 @@ void loopTerminal() {
   if(isWiFiConnected() == false){
     return;
   }
+
+  if(hasWiFiShellStarted == false){
+    setupTerminal();
+  }
+
   shell.update();
 }
 
@@ -107,14 +112,14 @@ void setupTerminal() {
   shell.clear();
 
   // Attach the logo.
-  shell.attachLogo( logo );
+  shell.attachLogo( logo1 );
 
   // Print start message
   Serial.println( "Program begin..." );
 
 
   shell.beginServer();
-  Serial.println( " [ OK ]" );
+  Serial.println( "[OK]" );
 
 
   // Initialize the storage card
@@ -140,6 +145,9 @@ void setupTerminal() {
 
   // setup the current path
   currentPath = "/";
+
+  // we are ready to start
+  hasWiFiShellStarted = true;
 }
 
 

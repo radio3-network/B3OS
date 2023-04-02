@@ -10,9 +10,12 @@ Therefore provides no support for pin connections.
 #include <Preferences.h>
 #include <ArduinoJson.h>
 #include "core/blum_global.h"
+#include "core/blum_status_bar.h"
 
-void wifiStart()
-{
+boolean wifiStart(){
+
+    // remove the wifi icon at the beginning
+    iconWifiRemove();
 
     // read from flash memory
     preferences.begin(NAMESPACE_GENERIC, false);
@@ -31,32 +34,39 @@ void wifiStart()
 
     // there is no wifi to start
     if (wifiEnabled == false){
-        return;
+        return false;
     }
 
     if(wifi_ssid.isEmpty()){
         Serial.println("WiFi needs to be configured, please connect to a reachable network");
-        return;
+        return false;
+    }
+
+    if(wifi_password.isEmpty()){
+        Serial.println("WiFi password needs to be configured, please connect to a reachable network");
+        return false;
     }
 
     Serial.print("Connecting to  WiFi: ");
-    Serial.print(wifi_ssid);
+    Serial.println(wifi_ssid);
+    Serial.print("Password: ");
+    Serial.println(wifi_password);
 
     WiFi.mode(WIFI_STA);
     WiFi.setSleep(WIFI_PS_NONE);
     WiFi.begin(wifi_ssid.c_str(), wifi_password.c_str());
 
-    int maxTries = 100;
+    int maxTries = 5;
     int i = 0;
 
     while (WiFi.status() != WL_CONNECTED){
-        i++;
-        delay(100);
+        i = i + 1;
+        delay(2000);
         Serial.print(".");
         if(i > maxTries){
             Serial.println("");
             Serial.println("WiFi connection failed");
-            return;
+            return false;
         }
     }
     Serial.println("WiFi connected");
@@ -65,6 +75,14 @@ void wifiStart()
     Serial.print( " with terminal at port: " );
     Serial.println( SERVER_PORT );
 
+    boolean isConnected = isWiFiConnected();
+
+    // create the icon on the status bar
+    if(isConnected){
+        iconWifiCreate();
+    }
+    // are we really connected?
+    return isConnected;
 }
 
 boolean isWiFiConnected(){

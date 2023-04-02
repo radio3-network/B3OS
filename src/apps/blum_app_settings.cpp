@@ -3,7 +3,7 @@
 #include "core/blum_global.h"
 #include "core/blum_status_bar.h"
 #include "apps/blum_app_home.h"
-#include "apps/blum_app_wifi.h"
+#include "hardware/wifi/blum_app_wifi.h"
 
 static void event_settings_not_implemented(lv_event_t *e){
     lv_obj_t * mbox1 = lv_msgbox_create(NULL, 

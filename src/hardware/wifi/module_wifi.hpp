@@ -11,7 +11,7 @@ Therefore provides no support for pin connections.
 #define MODULE_WIFI_HPP
 
 
-extern void wifiStart();
+extern boolean wifiStart();
 extern boolean isWiFiConnected();
 
 #endif

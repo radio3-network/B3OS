@@ -1,4 +1,12 @@
 {
+    
+        "editor.tabSize": 4,
+        "editor.detectIndentation": false,
+        "editor.insertSpaces": true,
+        "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, ColumnLimit: 0, AlignAfterOpenBracket: true, AlignConsecutiveAssignments: false, AlignConsecutiveDeclarations: false, AllowShortIfStatementsOnASingleLine: false, AllowShortLoopsOnASingleLine: false, BreakBeforeBinaryOperators: true, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum: true, AfterFunction: true, AfterNamespace: true, AfterStruct: true, AfterUnion: true, BeforeCatch: true, BeforeElse: true, IndentWidth: 4, SplitEmptyFunction: false, SplitEmptyRecord: false, SplitEmptyNamespace: false } }",
+        "C_Cpp.clang_format_style": "file",
+        "C_Cpp.clang_format_sortIncludes": false,
+    
     "files.associations": {
         "*.c ": "cpp",
         "blum.c": "cpp",

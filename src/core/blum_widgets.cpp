@@ -142,6 +142,13 @@ static void keyboardShow(lv_obj_t *targetTextArea){
     lv_obj_add_event_cb(kb, btn_event_keyboardKeypress, LV_EVENT_ALL, NULL);
     lv_keyboard_set_textarea(kb, targetTextArea);
     keyboardvisible = true;
+
+    // raise the focus
+    lv_group_t *group = lv_group_create();      // create a group
+    lv_group_add_obj(group, targetTextArea);    // add the object to the group
+    lv_group_add_obj(group, kb);                // add the object to the group
+    lv_group_focus_obj(targetTextArea);         // set focus on the object
+
 }
 
 static void keyboardHide(){

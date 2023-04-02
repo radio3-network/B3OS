@@ -29,6 +29,7 @@ static void iconWifiCreate(){
   statusIconWifi = lv_label_create(statusBar);
   lv_label_set_text(statusIconWifi, LV_SYMBOL_WIFI);
   lv_obj_align(statusIconWifi, LV_ALIGN_RIGHT_MID, -20, 0);
+  Serial.println("Wifi: Turn ON");
 }
 
 static void iconWifiRemove(){
@@ -37,6 +38,7 @@ static void iconWifiRemove(){
   }
   lv_obj_del(statusIconWifi);
   statusIconWifi = NULL;
+  Serial.println("Wifi: Turn OFF");
 }
 
 /**

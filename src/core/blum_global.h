@@ -38,6 +38,11 @@ static HashMap* mapWindows = NULL;
 static StringArray *indexData;
 
 
+// usable boxes
+static lv_obj_t * inputWindow;
+
+
+
 // settings saved on flash
 
 static Preferences preferences;
@@ -55,8 +60,6 @@ static String wifi_password = "";
 
 static boolean wifiEnabled = false;
 
-
-static lv_obj_t * switchWifi = NULL;
 
 
 // hardware-specific definitions
