@@ -91,20 +91,17 @@ static void start(){
     smartdisplay_init();
     // make the serial line available
     Serial.begin(115200);
+    // wait for serial to be available
     while (!Serial);
+    
+    // print the logo
     Serial.println("");
-    Serial.println("       _                ");
-    Serial.println("     _( )_              ");
-    Serial.println("    (_(0)_)             ");
-    Serial.println("      (_)               ");
-    Serial.println("       | __    Running  ");
-    Serial.println("       |/_/    Blumchen ");
-    Serial.println("       |                ");
-    Serial.println("       |                ");
+    Serial.print(logo);
     Serial.println("");
-    Serial.println("\033[0;37m");
-    Serial.println("Visit on GitHub:\033[1;32m https://github.com/radio3network \x1b[0m");
+    Serial.println("   B3 Operating System");
+    Serial.println("   version " + version);
     Serial.println("");
+    
     // load values in flash memory
     loadFlashValues();
     // load wifi

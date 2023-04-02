@@ -11,6 +11,24 @@
 // global settings
 static bool debug = true;
 
+static String version = "1.0.0";
+
+static const char logo[] =
+
+"                           \r\n"
+" ──▒▒▒▒▒▒───▄████▄         \r\n"
+" ─▒─▄▒─▄▒──███▄█▀          \r\n"
+" ─▒▒▒▒▒▒▒─▐████──█─█       \r\n"
+" ─▒▒▒▒▒▒▒──█████▄          \r\n"
+" ─▒─▒─▒─▒───▀████▀         \r\n"
+" ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   \r\n"
+" █▄─▄─▀█▄▄▄░█─▄▄─█─▄▄▄▄█   \r\n"
+" ██─▄─▀██▄▄░█─██─█▄▄▄▄─█   \r\n"
+" █▄▄▄▄██▄▄▄▄█▄▄▄▄█▄▄▄▄▄█   \r\n"
+"                           \r\n"
+;
+
+
 
 // global objects
 static lv_obj_t *kb;

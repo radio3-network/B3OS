@@ -12,6 +12,7 @@ Therefore provides no support for pin connections.
 
 
 extern boolean wifiStart();
+extern void wifiStop();
 extern boolean isWiFiConnected();
 
 #endif

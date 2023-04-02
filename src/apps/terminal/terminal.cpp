@@ -36,22 +36,8 @@ Shellminator shell(
   &serverWifi//, executionFunction
   );
 
-const char logo1[] =
-
-"                           \r\n"
-" ──▒▒▒▒▒▒───▄████▄         \r\n"
-" ─▒─▄▒─▄▒──███▄█▀          \r\n"
-" ─▒▒▒▒▒▒▒─▐████──█─█       \r\n"
-" ─▒▒▒▒▒▒▒──█████▄          \r\n"
-" ─▒─▒─▒─▒───▀████▀         \r\n"
-"                           \r\n"
-" ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   \r\n"
-" █▄─▄─▀█▄▄▄░█─▄▄─█─▄▄▄▄█   \r\n"
-" ██─▄─▀██▄▄░█─██─█▄▄▄▄─█   \r\n"
-" █▄▄▄▄██▄▄▄▄█▄▄▄▄█▄▄▄▄▄█   \r\n"
-"                           \r\n"
-;
-
+// Create a Shellminator object, and initialize it to use WiFiServer
+Shellminator shellSerial( &Serial );
 
 Commander::API_t API_tree[] = {
     // custom commands
@@ -112,7 +98,7 @@ void setupTerminal() {
   shell.clear();
 
   // Attach the logo.
-  shell.attachLogo( logo1 );
+  shell.attachLogo( logo );
 
   // Print start message
   Serial.println( "Program begin..." );

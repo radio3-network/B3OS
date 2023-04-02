@@ -2,45 +2,6 @@
 #include <lvgl.h>
 #include "blum.cpp"
 
-/*
-
-██████╗ ██╗     ██╗   ██╗███████╗███╗   ███╗ ██████╗██╗  ██╗███████╗███╗   ██╗
-██╔══██╗██║     ██║   ██║██╔════╝████╗ ████║██╔════╝██║  ██║██╔════╝████╗  ██║
-██████╔╝██║     ██║   ██║█████╗  ██╔████╔██║██║     ███████║█████╗  ██╔██╗ ██║
-██╔══██╗██║     ██║   ██║██╔══╝  ██║╚██╔╝██║██║     ██╔══██║██╔══╝  ██║╚██╗██║
-██████╔╝███████╗╚██████╔╝███████╗██║ ╚═╝ ██║╚██████╗██║  ██║███████╗██║ ╚████║
-╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝
-                                                                              
- ██████╗ ██╗   ██╗██╗                                                         
-██╔════╝ ██║   ██║██║                                                         
-██║  ███╗██║   ██║██║                                                         
-██║   ██║██║   ██║██║                                                         
-╚██████╔╝╚██████╔╝██║                                                         
- ╚═════╝  ╚═════╝ ╚═╝                                                         
-                                                                                           
-
-The Blümchen GUI is a set of LVGL-based methods
-for creating graphical dialogs without trouble.
-
-There is an example on the setup() method to help you
-getting started with the syntax. You would likely use
-this library because:
-
-    + creates standard dialogs (e.g. select wifi network)
-    + easy to use button/textarea, icons
-    + keyboard on screen is automatically handled 
-
-
-License: Apache-2.0
-Copyright (c) radio3.network
-URL: https://github.com/radio3-network/BluemchenGUI/
-
-More projects at https://github.com/radio3-network/
-
-
-Reference documentation for LVGL: https://docs.lvgl.io/8/
-
-*/
 
 
 void setup(){
@@ -84,29 +45,7 @@ void loop(){
 
     loopBlum();
 
-
-    //loopBluetooth();
-
     // change the builtin led for fun
-    //buildLedColorLoop();
+    buildLedColorLoop();
     
-    /*
-    int64_t time = esp_timer_get_time();
-    
-    // intervals of 1 second
-    if(time > (lastTime + 1000000)){
-        lastTime = esp_timer_get_time();
-        int value = smartdisplay_get_light_intensity();
-        //log("LDR", value);
-        //log("Time", lastTime);
-    }
-
-    // intervals of 5 seconds
-    if(time > (lastTime + 5000000)){
-        lastTime = esp_timer_get_time();
-        adjustBrightnessAutomatically();
-    }
-
-*/
-
 }

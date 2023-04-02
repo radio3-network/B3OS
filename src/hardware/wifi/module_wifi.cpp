@@ -12,6 +12,15 @@ Therefore provides no support for pin connections.
 #include "core/blum_global.h"
 #include "core/blum_status_bar.h"
 
+void wifiStop(){
+    // remove the wifi icon
+    iconWifiRemove();
+    // disconnect the wifi
+    WiFi.disconnect();
+    Serial.println("WiFi disconnected");
+}
+
+
 boolean wifiStart(){
 
     // remove the wifi icon at the beginning

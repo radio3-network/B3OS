@@ -176,10 +176,6 @@ void func_ll(char *args, Stream *response ){
     response -> print(time + " ");
 
     if(file.isDirectory()){
-
-      // \033[0;37m
-      // \033[1;32m 
-      
       // 34 == blue, 37 = white, 32 = green
       shell.setTerminalCharacterColor(response, 1, 34);
       response -> print(fileName);

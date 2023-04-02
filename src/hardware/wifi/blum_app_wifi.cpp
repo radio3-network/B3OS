@@ -23,6 +23,13 @@ static void btn_event_switch(lv_event_t *e) {
     preferences.putBool(KEY_WIFI_ENABLED, wifiEnabled);
     preferences.end();
 
+    if(wifiEnabled == false){
+        // remove the wifi icon
+        wifiStop();
+        return;
+    }
+
+
     // start the wifi
     wifiStart();
 }
