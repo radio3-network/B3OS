@@ -7,6 +7,7 @@
 static bool scan_done = false;
 
 static lv_obj_t *appWifiSwitch = NULL;
+static lv_obj_t *appWifiList = NULL;
 
 static String selectedSSID;
 
@@ -26,6 +27,9 @@ static void btn_event_switch(lv_event_t *e) {
     if (wifiEnabled == false) {
         // remove the wifi icon
         wifiStop();
+        // clean the list of items
+        lv_obj_clean(appWifiList);
+        
         return;
     }
 
@@ -72,6 +76,7 @@ static void ta_event_cb(lv_event_t *e) {
     }
     // hide the keyboard
     keyboardHide();
+    
     navGoBack();
 }
 
@@ -145,7 +150,7 @@ static void createWindowWifi() {
     }
 
     // list the currently available wifi networks
-    lv_obj_t *appWifiList = lv_list_create(cont);
+    appWifiList = lv_list_create(cont);
     // decide where to place the list
     int margin = 40;
     lv_obj_set_size(appWifiList, lv_pct(100), lv_pct(75));

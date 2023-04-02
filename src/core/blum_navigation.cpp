@@ -88,19 +88,23 @@ static void navNew(const char *title){
 static void navGoBack(){
 
     int i = StringArray_size(indexData) - 2;
-    const char * key = StringArray_get(indexData, i);
-
+    const char * windowFuture = StringArray_get(indexData, i);
+    const char * windowPresent = StringArray_get(indexData, i+1);
 
     // using the window name, get the window object
-    lv_obj_t * win = (lv_obj_t*) HashMapGet(mapWindows, key);
+    lv_obj_t * winFuture = (lv_obj_t*) HashMapGet(mapWindows, windowFuture);
+    lv_obj_t * winPresent = (lv_obj_t*) HashMapGet(mapWindows, windowPresent);
+    
+    // remove all old items
+    lv_obj_clean(winPresent);
+    lv_obj_del(winPresent);
+
     // bring this window object to the foreground
-    lv_obj_move_foreground(win);
-    // redraw it again
-    //TODO not yet working
-    lv_obj_invalidate(win);
+    lv_obj_move_foreground(winFuture);
+
     lv_task_handler();
     // update the label
-    lv_label_set_text(statusTextLabel, key);
+    lv_label_set_text(statusTextLabel, windowFuture);
 
     
     // means we are on the root again
@@ -108,11 +112,11 @@ static void navGoBack(){
         // delete the memory map
         HashMapClear(mapWindows);
         // add again the root window
-        HashMapInsert(mapWindows, key, win);
+        HashMapInsert(mapWindows, windowFuture, winFuture);
         // restore the icon and index
         navClean();
         // add home again on the index
-        navNew(key);
+        navNew(windowFuture);
         // stop it here
         return;
     }
