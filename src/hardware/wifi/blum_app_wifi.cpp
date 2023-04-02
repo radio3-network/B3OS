@@ -13,29 +13,7 @@ static String selectedSSID;
 
 #define DEFAULT_SCAN_LIST_SIZE 30
 
-/**
- *  Someone clicks on the "enable wifi button"
- */
-static void btn_event_switch(lv_event_t *e) {
-    wifiEnabled = lv_obj_has_state(appWifiSwitch, LV_STATE_CHECKED);
 
-    // write to flash memory
-    preferences.begin(NAMESPACE_GENERIC, false);
-    preferences.putBool(KEY_WIFI_ENABLED, wifiEnabled);
-    preferences.end();
-
-    if (wifiEnabled == false) {
-        // remove the wifi icon
-        wifiStop();
-        // clean the list of items
-        lv_obj_clean(appWifiList);
-        
-        return;
-    }
-
-    // start the wifi
-    wifiStart();
-}
 
 /*
   Accept the new password being given
@@ -120,41 +98,8 @@ static void btn_event_wifi_select(lv_event_t *e) {
     */
 }
 
-/**
- * dialog box for wifi
- */
-static void createWindowWifi() {
-    // create a new window
-    wifiWindow = createWindow("WiFi");
-    // content inside the window
-    lv_obj_t *cont = lv_win_get_content(wifiWindow);
 
-    // place a switch to use wifi or to shut it down
-    appWifiSwitch = lv_switch_create(cont);
-
-    // add an event to when the switch is clicked
-    lv_obj_add_event_cb(appWifiSwitch, btn_event_switch, LV_EVENT_CLICKED, NULL);
-
-    // add a label to explain what the switch does
-    lv_obj_t *label = lv_label_create(cont);
-    lv_label_set_text(label, "Use Wifi");
-    lv_obj_align(label, LV_ALIGN_DEFAULT, 60, 7);
-
-    // setup the initial state
-    if (wifiEnabled) {
-        lv_obj_add_state(appWifiSwitch, LV_STATE_CHECKED);
-    } else {
-        lv_obj_add_state(appWifiSwitch, LV_STATE_DEFAULT);
-        // no need to continue, wifi is disabled
-        return;
-    }
-
-    // list the currently available wifi networks
-    appWifiList = lv_list_create(cont);
-    // decide where to place the list
-    int margin = 40;
-    lv_obj_set_size(appWifiList, lv_pct(100), lv_pct(75));
-    lv_obj_align(appWifiList, LV_ALIGN_DEFAULT, 0, margin);
+static void populateListOfAvailableNetworks() {
 
     // list all available wifi networks
     // are we connected to wifi already?
@@ -217,6 +162,7 @@ static void createWindowWifi() {
     }
 }
 
+
 /*
   esp_netif_init();
   esp_event_loop_create_default();
@@ -254,6 +200,81 @@ static void createWindowWifi() {
   esp_wifi_stop;
 */
 // the selected wifi network is on the top
+
+/**
+ *  Someone clicks on the "enable wifi button"
+ */
+static void btn_event_switch(lv_event_t *e) {
+    wifiEnabled = lv_obj_has_state(appWifiSwitch, LV_STATE_CHECKED);
+
+    // write to flash memory
+    preferences.begin(NAMESPACE_GENERIC, false);
+    preferences.putBool(KEY_WIFI_ENABLED, wifiEnabled);
+    preferences.end();
+
+    if (wifiEnabled == false) {
+        // remove the wifi icon
+        wifiStop();
+        // clean the list of items
+        lv_obj_clean(appWifiList);
+        
+        return;
+    }
+
+    // start the wifi
+    wifiStart();
+
+    // list the wifi networks available
+    populateListOfAvailableNetworks();
+}
+
+
+/**
+ * dialog box for wifi
+ */
+static void createWindowWifi() {
+    // create a new window
+    wifiWindow = createWindow("WiFi");
+    // content inside the window
+    lv_obj_t *cont = lv_win_get_content(wifiWindow);
+
+    // place a switch to use wifi or to shut it down
+    appWifiSwitch = lv_switch_create(cont);
+
+    // add an event to when the switch is clicked
+    lv_obj_add_event_cb(appWifiSwitch, btn_event_switch, LV_EVENT_CLICKED, NULL);
+
+    // add a label to explain what the switch does
+    lv_obj_t *label = lv_label_create(cont);
+    lv_label_set_text(label, "Use Wifi");
+    lv_obj_align(label, LV_ALIGN_DEFAULT, 60, 7);
+
+    // delete any previous instances
+    if(appWifiList != NULL){
+        lv_obj_clean(appWifiList);
+        lv_obj_del(appWifiList);
+        appWifiList = NULL;
+    }
+
+    appWifiList = lv_list_create(cont);
+    // decide where to place the list
+    int margin = 40;
+    lv_obj_set_size(appWifiList, lv_pct(100), lv_pct(75));
+    lv_obj_align(appWifiList, LV_ALIGN_DEFAULT, 0, margin);
+
+    // setup the initial state
+    if (wifiEnabled) {
+        lv_obj_add_state(appWifiSwitch, LV_STATE_CHECKED);
+    } else {
+        lv_obj_add_state(appWifiSwitch, LV_STATE_DEFAULT);
+        // no need to continue, wifi is disabled
+        return;
+    }
+
+    // list the currently available wifi networks
+    populateListOfAvailableNetworks();
+}
+
 
 static void event_settings_wifi(lv_event_t *e) {
     createWindowWifi();
