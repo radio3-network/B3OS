@@ -37,6 +37,8 @@ static void iconWifiRemove(){
   if(statusIconWifi == NULL){
     return;
   }
+  lv_obj_clean(statusIconWifi);
+  lv_label_set_text(statusIconWifi, LV_SYMBOL_DUMMY);
   lv_obj_del(statusIconWifi);
   statusIconWifi = NULL;
   Serial.println("Wifi: Turn OFF");

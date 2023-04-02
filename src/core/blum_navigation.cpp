@@ -16,7 +16,7 @@
 
     The HashMap is updated every time a new window
     is created at blum_widgets createWindow()
-    
+
 
     // bring the screen forward
     lv_obj_move_foreground(settingsWindow);
@@ -41,24 +41,26 @@ static void statusBarTextUpdate(const char* text){
 
 */
 
-
-
-
-
-static int navGetNextFreeIndex(){
+static int navGetNextFreeIndex() {
     return StringArray_size(indexData);
 }
 
-static void navDelete(int indexNumber){
+static void navDelete(int indexNumber) {
     StringArray_delete(indexData, indexNumber);
 }
 
 /**
  * The beginning. Starts with the home window
-*/
-static void navClean(){
-    
-    if(indexData != NULL){
+ */
+static void navClean() {
+    if (indexData != NULL) {
+        int i = StringArray_size(indexData) - 1;
+        /*if (i > 0) {
+            const char *windowPresent = StringArray_get(indexData, i);
+            lv_obj_t *winPresent = (lv_obj_t *)HashMapGet(mapWindows, windowPresent);
+            lv_obj_clean(winPresent);
+            lv_obj_del(winPresent);
+        }*/
         StringArray_destroy(indexData);
     }
     // create a new index
@@ -67,34 +69,32 @@ static void navClean(){
     lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS);
 }
 
-static void navNew(const char *title){
+static void navNew(const char *title) {
     // add it to memory
     StringArray_add(indexData, title);
 
     int i = StringArray_size(indexData) - 1;
-    const char * key = StringArray_get(indexData, i);
-    
+    const char *key = StringArray_get(indexData, i);
+
     // change the title on the status bar
     lv_label_set_text(statusTextLabel, title);
     // add the appropriate icon
-    if(i == 0){
+    if (i == 0) {
         lv_label_set_text(labelSettingsButton, LV_SYMBOL_SETTINGS);
-    }else{
+    } else {
         lv_label_set_text(labelSettingsButton, LV_SYMBOL_LEFT);
     }
-    
 }
 
-static void navGoBack(){
-
+static void navGoBack() {
     int i = StringArray_size(indexData) - 2;
-    const char * windowFuture = StringArray_get(indexData, i);
-    const char * windowPresent = StringArray_get(indexData, i+1);
+    const char *windowFuture = StringArray_get(indexData, i);
+    const char *windowPresent = StringArray_get(indexData, i + 1);
 
     // using the window name, get the window object
-    lv_obj_t * winFuture = (lv_obj_t*) HashMapGet(mapWindows, windowFuture);
-    lv_obj_t * winPresent = (lv_obj_t*) HashMapGet(mapWindows, windowPresent);
-    
+    lv_obj_t *winFuture = (lv_obj_t *)HashMapGet(mapWindows, windowFuture);
+    lv_obj_t *winPresent = (lv_obj_t *)HashMapGet(mapWindows, windowPresent);
+
     // remove all old items
     lv_obj_clean(winPresent);
     lv_obj_del(winPresent);
@@ -106,9 +106,8 @@ static void navGoBack(){
     // update the label
     lv_label_set_text(statusTextLabel, windowFuture);
 
-    
     // means we are on the root again
-    if(i == 0){
+    if (i == 0) {
         // delete the memory map
         HashMapClear(mapWindows);
         // add again the root window
@@ -120,10 +119,7 @@ static void navGoBack(){
         // stop it here
         return;
     }
-   
 
     // delete the current index memory
-    navDelete(i+1);
-    
+    navDelete(i + 1);
 }
-
