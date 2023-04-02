@@ -23,12 +23,11 @@ static void btn_event_switch(lv_event_t *e) {
     preferences.putBool(KEY_WIFI_ENABLED, wifiEnabled);
     preferences.end();
 
-    if(wifiEnabled == false){
+    if (wifiEnabled == false) {
         // remove the wifi icon
         wifiStop();
         return;
     }
-
 
     // start the wifi
     wifiStart();
@@ -106,7 +105,7 @@ static void btn_event_wifi_select(lv_event_t *e) {
     lv_keyboard_set_textarea(kb, pwd_ta); //Focus it on one of the text areas to start
     // align on top of the keyboard
     lv_obj_align_to(pwd_ta, kb, LV_ALIGN_OUT_TOP_MID, 0, -20);
-    
+
 
     // raise the focus
     lv_group_t *group = lv_group_create();  // create a group
@@ -128,13 +127,6 @@ static void createWindowWifi() {
     // place a switch to use wifi or to shut it down
     appWifiSwitch = lv_switch_create(cont);
 
-    // setup the initial state
-    if (wifiEnabled) {
-        lv_obj_add_state(appWifiSwitch, LV_STATE_CHECKED);
-    } else {
-        lv_obj_add_state(appWifiSwitch, LV_STATE_DEFAULT);
-    }
-
     // add an event to when the switch is clicked
     lv_obj_add_event_cb(appWifiSwitch, btn_event_switch, LV_EVENT_CLICKED, NULL);
 
@@ -142,6 +134,15 @@ static void createWindowWifi() {
     lv_obj_t *label = lv_label_create(cont);
     lv_label_set_text(label, "Use Wifi");
     lv_obj_align(label, LV_ALIGN_DEFAULT, 60, 7);
+
+    // setup the initial state
+    if (wifiEnabled) {
+        lv_obj_add_state(appWifiSwitch, LV_STATE_CHECKED);
+    } else {
+        lv_obj_add_state(appWifiSwitch, LV_STATE_DEFAULT);
+        // no need to continue, wifi is disabled
+        return;
+    }
 
     // list the currently available wifi networks
     lv_obj_t *appWifiList = lv_list_create(cont);
@@ -151,9 +152,15 @@ static void createWindowWifi() {
     lv_obj_align(appWifiList, LV_ALIGN_DEFAULT, 0, margin);
 
     // list all available wifi networks
-    // TODO this only works on ESP devices
-    // TODO this blocks the whole processing, add it as a thread
+    // are we connected to wifi already?
+    boolean isConnected = isWiFiConnected();
+    if (isConnected) {
+        Serial.println("WiFi is connected from before, disconnecting before scan");
+    }else{
+        Serial.println("WiFi is NOT connected, will scan for networks");
+    }
 
+    // TODO this blocks the whole processing, add it as a thread
     Serial.println("WiFi scan starting..");
 
     // WiFi.scanNetworks will return the number of networks found.
@@ -188,6 +195,15 @@ static void createWindowWifi() {
         // create the text for the list item
         char output_text[50];
         sprintf(output_text, "%s (%d%%)", name_copy, percentage);
+
+        Serial.print("Found network: ");
+        Serial.println(name_copy);
+        
+        // let end-users know that we are connected to this network
+        if (isConnected && strcmp(name_copy, wifi_ssid.c_str()) == 0) {
+            strcat(output_text, " [connected]");
+        }
+
         // add the list item
         lv_obj_t *btn = lv_list_add_btn(appWifiList, LV_SYMBOL_WIFI, output_text);
 

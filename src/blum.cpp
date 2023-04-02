@@ -78,8 +78,8 @@ static void loadFlashValues(){
     preferences.begin(NAMESPACE_GENERIC, false);
     // WIFI
     wifiEnabled = preferences.getBool(KEY_WIFI_ENABLED, false);
-    //wifi_ssid = TextKeyValueStore::get(KEY_WIFI_SSID);
-    //wifi_password = TextKeyValueStore::get(KEY_WIFI_PASSWORD);
+    wifi_ssid = preferences.getString(KEY_WIFI_SSID, "");
+    wifi_password = preferences.getString(KEY_WIFI_PASSWORD, "");
     preferences.end();
     
  
@@ -97,8 +97,7 @@ static void start(){
     // print the logo
     Serial.println("");
     Serial.print(logo);
-    Serial.println("");
-    Serial.println("   B3 Operating System");
+    //Serial.println("   B3 Operating System");
     Serial.println("   version " + version);
     Serial.println("");
     

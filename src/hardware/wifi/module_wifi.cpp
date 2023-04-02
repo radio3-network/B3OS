@@ -12,17 +12,24 @@ Therefore provides no support for pin connections.
 #include "core/blum_global.h"
 #include "core/blum_status_bar.h"
 
-void wifiStop(){
+void wifiStop() {
     // remove the wifi icon
     iconWifiRemove();
     // disconnect the wifi
     WiFi.disconnect();
+
+    // mark this setting in permanent memory
+    preferences.begin(NAMESPACE_GENERIC, false);
+    wifiEnabled = preferences.putBool(KEY_WIFI_ENABLED, false);
+    preferences.end();
+
+    // mark this setting on runtime memory
+    wifiEnabled = false;
+
     Serial.println("WiFi disconnected");
 }
 
-
-boolean wifiStart(){
-
+boolean wifiStart() {
     // remove the wifi icon at the beginning
     iconWifiRemove();
 
@@ -32,26 +39,25 @@ boolean wifiStart(){
     //  if wifi enabled, set it to true
     wifiEnabled = preferences.getBool(KEY_WIFI_ENABLED, false);
 
-    if(preferences.isKey(KEY_WIFI_SSID) 
-        && preferences.isKey(KEY_WIFI_PASSWORD)){
-        wifi_ssid = preferences.getString(KEY_WIFI_SSID);
-        wifi_password = preferences.getString(KEY_WIFI_PASSWORD);
-    }
+    // read the SSID and password
+    Serial.println("Reading wifi SSID and password from flash memory");
+    wifi_ssid = preferences.getString(KEY_WIFI_SSID, "");
+    wifi_password = preferences.getString(KEY_WIFI_PASSWORD, "");
 
     // no more need to read stuff from flash
     preferences.end();
 
     // there is no wifi to start
-    if (wifiEnabled == false){
+    if (wifiEnabled == false) {
         return false;
     }
 
-    if(wifi_ssid.isEmpty()){
+    if (wifi_ssid.isEmpty()) {
         Serial.println("WiFi needs to be configured, please connect to a reachable network");
         return false;
     }
 
-    if(wifi_password.isEmpty()){
+    if (wifi_password.isEmpty()) {
         Serial.println("WiFi password needs to be configured, please connect to a reachable network");
         return false;
     }
@@ -68,32 +74,32 @@ boolean wifiStart(){
     int maxTries = 5;
     int i = 0;
 
-    while (WiFi.status() != WL_CONNECTED){
+    while (WiFi.status() != WL_CONNECTED) {
         i = i + 1;
-        delay(2000);
+        delay(1000);
         Serial.print(".");
-        if(i > maxTries){
+        if (i > maxTries) {
             Serial.println("");
             Serial.println("WiFi connection failed");
             return false;
         }
     }
     Serial.println("WiFi connected");
-    Serial.print( "Device IP: " );
-    Serial.print( WiFi.localIP() );
-    Serial.print( " with terminal at port: " );
-    Serial.println( SERVER_PORT );
+    Serial.print("Device IP: ");
+    Serial.print(WiFi.localIP());
+    Serial.print(" with terminal at port: ");
+    Serial.println(SERVER_PORT);
 
     boolean isConnected = isWiFiConnected();
 
-    // create the icon on the status bar
-    if(isConnected){
+    // create the icon on the status bar, only when connected
+    if (isConnected) {
         iconWifiCreate();
     }
     // are we really connected?
     return isConnected;
 }
 
-boolean isWiFiConnected(){
+boolean isWiFiConnected() {
     return WiFi.status() == WL_CONNECTED;
 }
