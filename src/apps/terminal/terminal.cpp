@@ -43,16 +43,20 @@ Commander::API_t API_tree[] = {
     // custom commands
     apiElement( "clear", "Clear the screen contents", func_clear),
     apiElement( "formatCard", "Format (erase/initialize) the memory card", func_formatCard),
-    apiElement( "echo", "Print a line of text", func_echo),
+    apiElement( "echo", "Print a line of text\r\n\tExample: echo [ message ]", func_echo),
     apiElement( "ls", "List files in a single line", func_ls),
     apiElement( "ll", "List files with details", func_ll),
-    apiElement( "mkdir", "Make a directory", func_mkdir),
-    apiElement( "cd", "Change directory", func_cd),
+    apiElement( "mkdir", "Make a directory\r\n\tExample: mkdir [ Folder Name ]", func_mkdir),
+    apiElement( "cd", "Change directory\r\n\tExample: cd [ Folder Name ]", func_cd),
     apiElement( "rm", "Remove one file", func_rm),
-    apiElement( "touch", "Create an empty file", func_touch),
+    apiElement( "touch", "Create an empty file\r\n\tExample: touch [ File Name ]", func_touch),
     apiElement( "reboot", "Reboots the device", func_reboot),
-    apiElement( "wait", "Wait a number of milliseconds", func_wait),
+    apiElement( "wait", "Wait a number of milliseconds\r\n\tExample: wait 5000", func_wait),
     apiElement( "whoami", "Displays the current user", func_wait),
+    apiElement( "run", "Runs an app from disk\r\n\tExample: run [ File Name ]", func_run),
+    apiElement( "version", "Outputs operating system version", func_version),
+    apiElement( "logo", "Outputs operating system logo", func_logo),
+
 
     // built-in commands
     API_ELEMENT_MILLIS,

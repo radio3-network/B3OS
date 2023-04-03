@@ -6,6 +6,7 @@
 #include <utils/utils.h>
 #include "hardware/hardware.h"
 #include "apps/terminal/terminal.hpp"
+#include "apps/launcher/apps.hpp"
 
 
 // global settings

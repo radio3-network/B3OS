@@ -13,5 +13,7 @@ void func_clear(char *args, Stream *response );
 void func_reboot(char *args, Stream *response );
 void func_echo(char *args, Stream *response );
 void func_formatCard(char *args, Stream *response );
+void func_version(char *args, Stream *response );
+void func_logo(char *args, Stream *response );
 
 #endif

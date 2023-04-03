@@ -97,9 +97,6 @@ static void start(){
     // print the logo
     Serial.println("");
     Serial.print(logo);
-    //Serial.println("   B3 Operating System");
-    Serial.println("   version " + version);
-    Serial.println("");
     
     // load values in flash memory
     loadFlashValues();

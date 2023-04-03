@@ -22,5 +22,6 @@ extern void func_ls(char *args, Stream *response );
 extern void func_ll(char *args, Stream *response );
 extern String getParentFolder(String currentPathEdited);
 extern void func_cd(char *args, Stream *response);
+extern void func_run(char *args, Stream *response);
 
 #endif

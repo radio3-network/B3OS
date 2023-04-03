@@ -5,19 +5,20 @@
 #include "Commander-IO.hpp"
 #include "Commander-API-Commands.hpp"
 
+#include "core/blum_global.h"
 #include "terminal.hpp"
 
 
 // prints a line of text
 void func_whoami(char *args, Stream *response ){
-  response -> println("root");
+  response -> print("root");
 }
 
 
 // delays execution for some seconds
 void func_wait(char *args, Stream *response ){
   if (args == NULL) {
-    response->println("No milliseconds specified");
+    response->print("No milliseconds specified");
     return;
   }
   uint32_t value = strtoul(args, NULL, 10);
@@ -55,5 +56,14 @@ void func_reboot(char *args, Stream *response ){
 // prints a line of text
 void func_echo(char *args, Stream *response ){
   response -> print(args);
-  response -> print("\r\n");
+}
+
+// prints the current version
+void func_version(char *args, Stream *response ){
+  response -> print(version);
+}
+
+// prints the logo of the operating system
+void func_logo(char *args, Stream *response ){
+  response -> print(logo);
 }
