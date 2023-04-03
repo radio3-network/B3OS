@@ -61,6 +61,7 @@ void func_formatCard(char *args, Stream *response) {
     }
 
     response->println("Storage card formatted successfully.");
+    //sd.end();
 }
 
 /**
@@ -338,8 +339,8 @@ void func_run(char *args, Stream *response) {
         return;
     }
 
-    response->print("Running app");
-    runFile(file);
+    response->println("Running " + path);
+    runFile(file, response);
 
     file.close();
     response->print("App concluded");

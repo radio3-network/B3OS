@@ -5,6 +5,6 @@
 
 //#include "loadFromDisk.cpp"
 
-extern boolean runFile(File32 file);
+extern boolean runFile(File32 file, Stream *response);
 
 #endif
