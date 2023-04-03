@@ -5,6 +5,9 @@
 #include "Commander-IO.hpp"
 #include "Commander-API-Commands.hpp"
 
+#include <WiFi.h>
+#include <HTTPClient.h>
+
 #include <hardware/hardware.h>
 #include "commands_disk.hpp"
 #include "terminal.hpp"
@@ -61,7 +64,7 @@ void func_formatCard(char *args, Stream *response) {
     }
 
     response->println("Storage card formatted successfully.");
-    //sd.end();
+    // sd.end();
 }
 
 /**
@@ -344,4 +347,73 @@ void func_run(char *args, Stream *response) {
 
     file.close();
     response->print("App concluded");
+}
+
+void downloadFile(String url, String filename, Stream *response) {
+    WiFiClient client;
+
+    // Create an HTTP client object
+    HTTPClient http;
+
+    // Start the download
+    response->printf("Downloading %s", url.c_str());
+    response->println("");
+    http.begin(client, url);
+    int httpCode = http.GET();
+
+    if (httpCode == HTTP_CODE_OK) {
+        // Open the file on the SD card for writing
+        response->printf("Saving to %s", filename.c_str());
+        response->println("");
+
+        File32 file = sd.open(filename, FILE_WRITE);
+
+        // Write the downloaded data to the file
+        WiFiClient *stream = http.getStreamPtr();
+        int totalSize = http.getSize();
+        int downloadedSize = 0;
+        while (stream->available()) {
+            byte data = stream->read();
+            file.write(data);
+            downloadedSize++;
+            if (downloadedSize % 1024 == 0) {
+                int progress = (int)(downloadedSize * 100 / totalSize);
+                response->printf("%d/%d bytes (%d%%)", downloadedSize, totalSize, progress);
+                response->println("");
+            }
+        }
+
+        // Close the file
+        file.close();
+        response->println("Download complete");
+    } else {
+        response->printf("Failed to download %s (HTTP error %d)", url.c_str(), httpCode);
+        response->println("");
+    }
+
+    // Cleanup
+    http.end();
+}
+
+void func_download(char *args, Stream *response) {
+    if (args == NULL || args[0] == '\0') {
+        response->println("No file or folder specified");
+        return;
+    }
+
+    // Parse the arguments string
+    char *url = strtok(args, " ");
+    char *filename_c = strtok(NULL, " ");
+
+    if (url == NULL || filename_c == NULL) {
+        // Invalid arguments
+        response->println("Invalid arguments.");
+        return;
+    }
+
+    // get the proper path
+    String filename = getPath(filename_c);
+
+    // Download the file
+    downloadFile(url, filename, response);
 }
