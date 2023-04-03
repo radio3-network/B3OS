@@ -177,10 +177,10 @@ void func_ll(char *args, Stream *response ){
 
     if(file.isDirectory()){
       // 34 == blue, 37 = white, 32 = green
-      shell.setTerminalCharacterColor(response, 1, 34);
+      Shellminator::setTerminalCharacterColor(response, Shellminator::BOLD, Shellminator::BLUE);
       response -> print(fileName);
       response -> print("/");
-      shell.setTerminalCharacterColor(response, 0, 37);
+      Shellminator::setTerminalCharacterColor(response, Shellminator::REGULAR, Shellminator::WHITE);
       response -> print("\r\n");
     }else{
       response -> print(fileName);
@@ -217,10 +217,10 @@ void func_ls(char *args, Stream *response ){
   }
 
     if(file.isDirectory()){
-      shell.setTerminalCharacterColor(response, 1, 34);
+      Shellminator::setTerminalCharacterColor(response, Shellminator::BOLD, Shellminator::BLUE);
       response -> print(fileName);
       response -> print("/");
-      shell.setTerminalCharacterColor(response, 0, 37);
+      Shellminator::setTerminalCharacterColor(response, Shellminator::REGULAR, Shellminator::WHITE);
       response -> print(" ");
     }else{
       response -> print(fileName);
