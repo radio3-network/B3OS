@@ -59,6 +59,7 @@ Commander::API_t API_tree[] = {
     //apiElement( "exit", "Exits the current session", func_exit),
     apiElement( "beep", "Sends a beep to the console", func_beep),
     apiElement( "download", "Download a file from the internet\r\n\tExample: download [ URL ] [ File Name ]", func_download),
+    apiElement( "print", "Print to console the contents of a file\r\n\tExample: print [ File Name ]", func_print),
 
 
     // built-in commands

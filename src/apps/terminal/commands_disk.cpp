@@ -417,3 +417,29 @@ void func_download(char *args, Stream *response) {
     // Download the file
     downloadFile(url, filename, response);
 }
+
+void func_print(char *args, Stream *response) {
+    if (args == NULL || args[0] == '\0') {
+        response->println("No file name specified");
+        return;
+    }
+
+    String filename = getPath(args);
+
+    // Open the file
+    File32 file = sd.open(filename);
+
+    // Check if the file opened successfully
+    if (!file) {
+        response->println("Failed to open file");
+        return;
+    }
+
+    // Print the file contents to the response stream
+    while (file.available()) {
+        response->write(file.read());
+    }
+
+    // Close the file
+    file.close();
+}
