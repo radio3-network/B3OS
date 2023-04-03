@@ -28,6 +28,7 @@ void func_wait(char *args, Stream *response ){
 // similar to CLEAR function in Linux
 void func_clear(char *args, Stream *response ){
   shell.clear();
+  //Shellminator::clear(response);
 }
 
 // reboot the device
