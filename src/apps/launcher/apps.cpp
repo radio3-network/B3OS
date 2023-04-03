@@ -4,36 +4,36 @@
 /**
  * Provides a safe offset for loading the binary from disk storage
  */
-uint32_t calculate_flash_offset(File32 file) {
-  const esp_partition_t* partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_SPIFFS, NULL);
-  uint32_t max_binary_app_size = partition->size;
-  uint32_t file_size = file.size();
+uint32_t calculate_flash_offset(File32 file, Stream* response) {
+    const esp_partition_t* partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_SPIFFS, NULL);
+    uint32_t max_binary_app_size = partition->size;
+    uint32_t file_size = file.size();
 
-  Serial.print("Maximum binary app size that can be loaded into partition: ");
-  Serial.println(max_binary_app_size);
+    response->print("Maximum binary app size that can be loaded into partition: ");
+    response->println(max_binary_app_size);
 
-  Serial.print("Size of binary app to be loaded: ");
-  Serial.println(file_size);
+    response->print("Size of binary app to be loaded: ");
+    response->println(file_size);
 
-  // Check if file size is larger than available free memory
-  if (file_size > max_binary_app_size) {
-    Serial.println("File size is larger than available free memory");
-    return -1;
-  }
+    // Check if file size is larger than available free memory
+    if (file_size > max_binary_app_size) {
+        response->println("File size is larger than available free memory");
+        return -1;
+    }
 
-  /*
-  Ensure that the binary app is placed in a location
-  that is aligned with the memory requirements of the ESP32,
-  while also providing enough space for it to run reliably.
-  */
-  uint32_t offset = partition->address + ((max_binary_app_size - file_size) / 2);
-  return offset;
+    /*
+    Ensure that the binary app is placed in a location
+    that is aligned with the memory requirements of the ESP32,
+    while also providing enough space for it to run reliably.
+    */
+    uint32_t offset = partition->address + ((max_binary_app_size - file_size) / 2);
+    return offset;
 }
 
-void writeFromFileToFlash(uint32_t address, File32 file) {
+void writeFromFileToFlash(uint32_t address, File32 file, Stream* response) {
     // Open file
     if (!file) {
-        Serial.print("Failed to open app file");
+        response->println("Failed to open app file");
         return;
     }
 
@@ -43,7 +43,7 @@ void writeFromFileToFlash(uint32_t address, File32 file) {
     // Find partition
     const esp_partition_t* partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_SPIFFS, NULL);
     if (!partition) {
-        Serial.println("Failed to find partition for writing");
+        response->println("Failed to find partition for writing");
         file.close();
         return;
     }
@@ -51,7 +51,8 @@ void writeFromFileToFlash(uint32_t address, File32 file) {
     // Erase flash memory
     esp_err_t err = esp_partition_erase_range(partition, address, fileSize);
     if (err != ESP_OK) {
-        Serial.println("Failed to erase flash memory");
+        response->print("Failed to erase flash memory: ");
+        response->println(esp_err_to_name(err));
         file.close();
         return;
     }
@@ -61,7 +62,7 @@ void writeFromFileToFlash(uint32_t address, File32 file) {
 
     // Read file data into buffer
     if (file.read(buffer, fileSize) != fileSize) {
-        Serial.println("Failed to read app file");
+        response->println("Failed to read app file");
         delete[] buffer;
         file.close();
         return;
@@ -70,7 +71,7 @@ void writeFromFileToFlash(uint32_t address, File32 file) {
     // Write data to flash memory
     err = esp_partition_write(partition, address, buffer, fileSize);
     if (err != ESP_OK) {
-        Serial.println("Failed to write data to flash memory");
+        response->println("Failed to write data to flash memory");
         delete[] buffer;
         file.close();
         return;
@@ -80,24 +81,24 @@ void writeFromFileToFlash(uint32_t address, File32 file) {
     delete[] buffer;
     file.close();
 
-    Serial.println("Data written to flash memory successfully");
+    response->println("Data written to flash memory successfully");
 }
-
 
 /**
  *  Runs a binary app.
  *  Returns false when something went wrong.
  */
-boolean runFile(File32 file) {
-    uint32_t address = calculate_flash_offset(file);
-    if(address == -1){
-        Serial.println("Unable to load app from file");
+boolean runFile(File32 file, Stream* response) {
+    uint32_t address = calculate_flash_offset(file, response);
+    if (address == -1) {
+        response->println("Unable to load app from file");
         return false;
     }
-    writeFromFileToFlash(address, file);
+    response->print("Writing to address: ");
+    response->println(address);
+    writeFromFileToFlash(address, file, response);
     // now run the app
     void (*firmwareEntry)(void) = (void (*)())(address);
     firmwareEntry();
     return true;
 }
-
