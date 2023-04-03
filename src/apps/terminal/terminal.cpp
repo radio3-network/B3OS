@@ -56,6 +56,8 @@ Commander::API_t API_tree[] = {
     apiElement( "run", "Runs an app from disk\r\n\tExample: run [ File Name ]", func_run),
     apiElement( "version", "Outputs operating system version", func_version),
     apiElement( "logo", "Outputs operating system logo", func_logo),
+    //apiElement( "exit", "Exits the current session", func_exit),
+    apiElement( "beep", "Sends a beep to the console", func_beep),
 
 
     // built-in commands

@@ -78,7 +78,7 @@ String getPath(char *args) {
 }
 
 void func_touch(char *args, Stream *response) {
-    if (args == NULL) {
+    if (args == NULL || args[0] == '\0') {
         response->println("No file name specified");
         return;
     }
@@ -96,6 +96,10 @@ void func_touch(char *args, Stream *response) {
 }
 
 void func_mkdir(char *args, Stream *response) {
+    if (args == NULL || args[0] == '\0') {
+        response->println("No file or folder specified");
+        return;
+    }
     String path = getPath(args);
     if (!sd.mkdir(path)) {
         response->println("Failed to create folder");
@@ -103,7 +107,7 @@ void func_mkdir(char *args, Stream *response) {
 }
 
 void func_rm(char *args, Stream *response) {
-    if (args == NULL) {
+    if (args == NULL || args[0] == '\0') {
         response->println("No file or folder specified");
         return;
     }
@@ -265,7 +269,7 @@ String getParentFolder(String currentPathEdited) {
 
 // change current working directory
 void func_cd(char *args, Stream *response) {
-    if (args == NULL) {
+    if (args == NULL || args[0] == '\0') {
         response->print("No directory specified");
         return;
     }
@@ -321,7 +325,7 @@ void func_cd(char *args, Stream *response) {
 }
 
 void func_run(char *args, Stream *response) {
-    if (args == NULL) {
+    if (args == NULL || args[0] == '\0') {
         response->print("No file name specified");
         return;
     }

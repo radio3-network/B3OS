@@ -15,5 +15,7 @@ void func_echo(char *args, Stream *response );
 void func_formatCard(char *args, Stream *response );
 void func_version(char *args, Stream *response );
 void func_logo(char *args, Stream *response );
+//void func_exit(char *args, Stream *response );
+void func_beep(char *args, Stream *response );
 
 #endif

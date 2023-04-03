@@ -65,5 +65,18 @@ void func_version(char *args, Stream *response ){
 
 // prints the logo of the operating system
 void func_logo(char *args, Stream *response ){
-  response -> print(logo);
+  //response -> print(logo);
+  shell.printBanner();
+}
+
+/*
+// prints the logo of the operating system
+void func_exit(char *args, Stream *response ){
+  response -> print(0x03);
+}
+*/
+
+// sends a beep to the console (not all support this)
+void func_beep(char *args, Stream *response ){
+    shell.beep();
 }
