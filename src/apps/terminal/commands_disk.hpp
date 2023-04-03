@@ -8,9 +8,11 @@
 #include "sdios.h"
 
 #include "terminal.hpp"
+#include "command_parser.hpp"
 
 extern String currentPath;
 extern SdFat sd;
+
 
 extern void card_initialize();
 extern void func_formatCard(char *args, Stream *response );

@@ -78,6 +78,7 @@ static String wifi_password = "";
   
 
 static boolean wifiEnabled = false;
+//static boolean wifiConnected = false;
 
 
 

@@ -60,6 +60,7 @@ Commander::API_t API_tree[] = {
     apiElement( "beep", "Sends a beep to the console", func_beep),
     apiElement( "download", "Download a file from the internet\r\n\tExample: download [ URL ] [ File Name ]", func_download),
     apiElement( "print", "Print to console the contents of a file\r\n\tExample: print [ File Name ]", func_print),
+    apiElement( "sh", "Run a script file with extension .sh\r\n\tExample: sh [ File Name ]", func_parse_script),
 
 
     // built-in commands

@@ -397,7 +397,12 @@ void downloadFile(String url, String filename, Stream *response) {
 
 void func_download(char *args, Stream *response) {
     if (args == NULL || args[0] == '\0') {
-        response->println("No file or folder specified");
+        response->println("No file specified");
+        return;
+    }
+
+    if(isWiFiConnected() == false){
+        response->println("WiFi needs to be connected");
         return;
     }
 
