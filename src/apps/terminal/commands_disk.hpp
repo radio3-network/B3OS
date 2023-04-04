@@ -9,9 +9,11 @@
 
 #include "terminal.hpp"
 #include "command_parser.hpp"
+#include "ftp_server.hpp"
 
 extern String currentPath;
 extern SdFat sd;
+extern SdFs sdfs;
 
 
 extern void card_initialize();
@@ -27,6 +29,6 @@ extern void func_cd(char *args, Stream *response);
 extern void func_run(char *args, Stream *response);
 extern void func_download(char *args, Stream *response);
 extern void func_print(char *args, Stream *response);
-extern void func_ftpserver(char *args, Stream *response);
+//extern void func_ftpserver(char *args, Stream *response);
 
 #endif

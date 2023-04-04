@@ -1,45 +1,43 @@
-#include <ESPAsyncWebServer.h>
-#include <ESPAsyncFTP.h>
-
-#include <Arduino.h> // required for Arduino functions and types
-#include <string.h> // required for string functions
+#include <Arduino.h>
+#include <string.h>
 #include "SdFat.h"
 
 #include "commands_disk.hpp"
 
-AsyncWebServer ftpServer(21); // create server on port 21
+#include "core/blum_global.h"
 
 
-void handleFileListRequest(AsyncFTPRequest *request, AsyncFTPResponse *response) {
-    // get file list from SD card
-    SdFile dir;
-    dir.open("/", O_RDONLY);
-    while (true) {
-        SdFile file = dir.openNextFile();
-        if (!file) break;
-        if (file.isDirectory()) {
-            response->addFile(String(file.name()) + "/", file.size(), false);
-        } else {
-            response->addFile(String(file.name()), file.size(), true);
-        }
-        file.close();
-    }
-    dir.close();
-}
+//#include "ESP32-FTP-Server.h"
+//#include "FTPFilesystem.h"
+
+#define FTP_USER "ftp"
+#define FTP_PASSWORD "ftp"
+
+//FTPServer ftp;
+
 
 void func_ftpserver(char *args, Stream *response) {
+    /*
     if (strcmp(args, "stop") == 0) {
         // stop FTP server
-        server.end();
         response->println("FTP server stopped");
-    } else {
-        // start FTP server
-        server.serveStatic("/", SD, "/", "max-age=86400");
-        server.on("/list", HTTP_GET, [](AsyncWebServerRequest *request) {
-            request->redirect("/"); // redirect to root for file listing
-        });
-        server.on("/list", HTTP_FTP, handleFileListRequest); // handle file listing requests
-        server.begin();
-        response->println("FTP server started");
+        //ftp.stop();
+        //SPIFFS.end();
+        ftpServerRunning = false;
+        return;
     }
+    // start FTP server
+    //SPIFFS.begin(true);
+    ftp.addUser(FTP_USER, FTP_PASSWORD);
+    //ftp.addFilesystem("SPIFFS", &SPIFFS);
+    ftp.addFilesystem(&sdfs);
+    ftp.begin();
+    ftpServerRunning = true;
+    response->println("FTP server started on port 21");
+    */
 }
+
+void ftpHandle(){
+//    ftp.handle();
+}
+

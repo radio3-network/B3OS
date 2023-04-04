@@ -14,10 +14,11 @@
 
 #include "core/blum_global.h"
 
-
 // Storage card
 #include "SdFat.h"
 #include "sdios.h"
+
+String currentPath = "/";
 
 uint32_t cardSectorCount = 0;
 uint8_t sectorBuffer[512];
@@ -29,9 +30,12 @@ SdCard *m_card = nullptr;
 #define SPI_CLOCK SD_SCK_MHZ(6)
 #define SD_CONFIG SdSpiConfig(TF_PIN_CS, DEDICATED_SPI, SPI_CLOCK)
 
-String currentPath = "/";
 SdFat sd;
 
+SdCard card;
+SdFs sdfs;
+
+/*
 void card_initialize() {
     // Select and initialize proper card driver.
     m_card = cardFactory.newCard(SD_CONFIG);
@@ -49,6 +53,29 @@ void card_initialize() {
     if (!sd.begin(SD_CONFIG)) {
         Serial.println("Error initializing storage card.");
     }
+}
+*/
+void card_initialize() {
+    // Initialize SD card
+    if (!card.begin(SD_CONFIG)) {
+        Serial.println("SD card initialization failed!");
+        return;
+    }
+    Serial.println("SD card initialized successfully!");
+
+    // Initialize file system
+    if (!sdfs.begin(SD_CONFIG)) {
+        Serial.println("File system initialization failed!");
+        return;
+    }
+
+    if (!sd.begin(SD_CONFIG)) {
+        Serial.println("Error initializing storage card.");
+    }
+
+    Serial.println("File system initialized successfully!");
+
+
 }
 
 // format a TF/SD card available on a single slot
@@ -402,7 +429,7 @@ void func_download(char *args, Stream *response) {
         return;
     }
 
-    if(isWiFiConnected() == false){
+    if (isWiFiConnected() == false) {
         response->println("WiFi needs to be connected");
         return;
     }
@@ -449,5 +476,3 @@ void func_print(char *args, Stream *response) {
     // Close the file
     file.close();
 }
-
-

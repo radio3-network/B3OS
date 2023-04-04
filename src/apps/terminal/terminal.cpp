@@ -2,7 +2,6 @@
 #ifndef TERMINAL_CPP
 #define TERMINAL_CPP
 
-
 #include <lvgl.h>
 #include <WiFi.h>
 #include "esp_wifi.h"
@@ -26,42 +25,42 @@
 boolean hasWiFiShellStarted = false;
 
 // Define serverWifi here in only one source file
-WiFiServer serverWifi( SERVER_PORT );
+WiFiServer serverWifi(SERVER_PORT);
 
 // We have to create an object from Commander class.
 Commander commander;
 
 // Create a Shellminator object, and initialize it to use WiFiServer
-Shellminator shell( 
-  &serverWifi//, executionFunction
-  );
+Shellminator shell(
+    &serverWifi  //, executionFunction
+);
 
 // Create a Shellminator object, and initialize it to use WiFiServer
-Shellminator shellSerial( &Serial );
+Shellminator shellSerial(&Serial);
 
 Commander::API_t API_tree[] = {
     // custom commands
-    apiElement( "clear", "Clear the screen contents", func_clear),
-    apiElement( "formatCard", "Format (erase/initialize) the memory card", func_formatCard),
-    apiElement( "echo", "Print a line of text\r\n\tExample: echo [ message ]", func_echo),
-    apiElement( "ls", "List files in a single line", func_ls),
-    apiElement( "ll", "List files with details", func_ll),
-    apiElement( "mkdir", "Make a directory\r\n\tExample: mkdir [ Folder Name ]", func_mkdir),
-    apiElement( "cd", "Change directory\r\n\tExample: cd [ Folder Name ]", func_cd),
-    apiElement( "rm", "Remove one file", func_rm),
-    apiElement( "touch", "Create an empty file\r\n\tExample: touch [ File Name ]", func_touch),
-    apiElement( "reboot", "Reboots the device", func_reboot),
-    apiElement( "wait", "Wait a number of milliseconds\r\n\tExample: wait 5000", func_wait),
-    apiElement( "whoami", "Displays the current user", func_wait),
-    apiElement( "run", "Runs an app from disk\r\n\tExample: run [ File Name ]", func_run),
-    apiElement( "version", "Outputs operating system version", func_version),
-    apiElement( "logo", "Outputs operating system logo", func_logo),
-    //apiElement( "exit", "Exits the current session", func_exit),
-    apiElement( "beep", "Sends a beep to the console", func_beep),
-    apiElement( "download", "Download a file from the internet\r\n\tExample: download [ URL ] [ File Name ]", func_download),
-    apiElement( "print", "Print to console the contents of a file\r\n\tExample: print [ File Name ]", func_print),
-    apiElement( "sh", "Run a script file with extension .sh\r\n\tExample: sh [ File Name ]", func_parse_script),
-
+    apiElement("clear", "Clear the screen contents", func_clear),
+    apiElement("formatCard", "Format (erase/initialize) the memory card", func_formatCard),
+    apiElement("echo", "Print a line of text\r\n\tExample: echo [ message ]", func_echo),
+    apiElement("ls", "List files in a single line", func_ls),
+    apiElement("ll", "List files with details", func_ll),
+    apiElement("mkdir", "Make a directory\r\n\tExample: mkdir [ Folder Name ]", func_mkdir),
+    apiElement("cd", "Change directory\r\n\tExample: cd [ Folder Name ]", func_cd),
+    apiElement("rm", "Remove one file", func_rm),
+    apiElement("touch", "Create an empty file\r\n\tExample: touch [ File Name ]", func_touch),
+    apiElement("reboot", "Reboots the device", func_reboot),
+    apiElement("wait", "Wait a number of milliseconds\r\n\tExample: wait 5000", func_wait),
+    apiElement("whoami", "Displays the current user", func_wait),
+    apiElement("run", "Runs an app from disk\r\n\tExample: run [ File Name ]", func_run),
+    apiElement("version", "Outputs operating system version", func_version),
+    apiElement("logo", "Outputs operating system logo", func_logo),
+    // apiElement( "exit", "Exits the current session", func_exit),
+    apiElement("beep", "Sends a beep to the console", func_beep),
+    apiElement("download", "Download a file from the internet\r\n\tExample: download [ URL ] [ File Name ]", func_download),
+    apiElement("print", "Print to console the contents of a file\r\n\tExample: print [ File Name ]", func_print),
+    apiElement("sh", "Run a script file with extension .sh\r\n\tExample: sh [ File Name ]", func_parse_script),
+    apiElement("ftpserver", "Start FTP server\r\n\tExample: ftpserver [ no arguments ] start the server\r\n\t ftpserver stop", func_ftpserver),
 
     // built-in commands
     API_ELEMENT_MILLIS,
@@ -81,69 +80,67 @@ Commander::API_t API_tree[] = {
     API_ELEMENT_COS,
     API_ELEMENT_ABS,
     API_ELEMENT_RANDOM,
-    API_ELEMENT_NOT
-};
-
+    API_ELEMENT_NOT};
 
 void loopTerminal() {
-  if(isWiFiConnected() == false){
-    return;
-  }
+    if (isWiFiConnected() == false) {
+        return;
+    }
 
-  if(hasWiFiShellStarted == false){
-    setupTerminal();
-  }
+    if (hasWiFiShellStarted == false) {
+        setupTerminal();
+    }
 
-  shell.update();
+    if(ftpServerRunning){
+        ftpHandle();
+    }
+
+    shell.update();
 }
-
 
 void setupTerminal() {
-  if(isWiFiConnected() == false){
-    return;
-  }
+    if (isWiFiConnected() == false) {
+        return;
+    }
 
- // Clear the terminal
-  shell.clear();
+    // Clear the terminal
+    shell.clear();
 
-  // Attach the logo.
-  shell.attachLogo( logo );
+    // Attach the logo.
+    shell.attachLogo(logo);
 
-  // Print start message
-  Serial.println( "Program begin..." );
+    // Print start message
+    Serial.println("Program begin...");
 
+    shell.beginServer();
+    Serial.println("[OK]");
 
-  shell.beginServer();
-  Serial.println( "[OK]" );
+    // Initialize the storage card
+    card_initialize();
 
+    // There is an option to attach a debug channel to Commander.
+    // It can be handy to find any problems during the initialization
+    // phase. In this example we will use Serial for this.
+    commander.attachDebugChannel(&Serial);
 
-  // Initialize the storage card
-  card_initialize();
+    // At start, Commander does not know anything about our commands.
+    // We have to attach the API_tree array from the previous steps
+    // to Commander to work properly.
+    commander.attachTree(API_tree);
 
-  // There is an option to attach a debug channel to Commander.
-  // It can be handy to find any problems during the initialization
-  // phase. In this example we will use Serial for this.
-  commander.attachDebugChannel( &Serial );
+    // Initialize Commander.
+    commander.init();
 
-  // At start, Commander does not know anything about our commands.
-  // We have to attach the API_tree array from the previous steps
-  // to Commander to work properly.
-  commander.attachTree( API_tree );
+    shell.attachCommander(&commander);
 
-  // Initialize Commander.
-  commander.init();
+    // initialize shell object.
+    shell.begin("root");
 
-  shell.attachCommander( &commander );
+    // setup the current path
+    currentPath = "/";
 
-  // initialize shell object.
-  shell.begin( "root" );
-
-  // setup the current path
-  currentPath = "/";
-
-  // we are ready to start
-  hasWiFiShellStarted = true;
+    // we are ready to start
+    hasWiFiShellStarted = true;
 }
-
 
 #endif

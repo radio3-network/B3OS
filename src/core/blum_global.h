@@ -80,6 +80,10 @@ static String wifi_password = "";
 static boolean wifiEnabled = false;
 //static boolean wifiConnected = false;
 
+//#include "ESP-FTP-Server-Lib.h"
+static boolean ftpServerRunning = false;
+//extern FTPServer ftp;
+
 
 
 // hardware-specific definitions
