@@ -27,5 +27,6 @@ extern void func_cd(char *args, Stream *response);
 extern void func_run(char *args, Stream *response);
 extern void func_download(char *args, Stream *response);
 extern void func_print(char *args, Stream *response);
+extern void func_ftpserver(char *args, Stream *response);
 
 #endif

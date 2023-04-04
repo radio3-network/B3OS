@@ -1,31 +1,34 @@
 ```
-██████╗ ██╗     ██╗   ██╗███████╗███╗   ███╗ ██████╗██╗  ██╗███████╗███╗   ██╗
-██╔══██╗██║     ██║   ██║██╔════╝████╗ ████║██╔════╝██║  ██║██╔════╝████╗  ██║
-██████╔╝██║     ██║   ██║█████╗  ██╔████╔██║██║     ███████║█████╗  ██╔██╗ ██║
-██╔══██╗██║     ██║   ██║██╔══╝  ██║╚██╔╝██║██║     ██╔══██║██╔══╝  ██║╚██╗██║
-██████╔╝███████╗╚██████╔╝███████╗██║ ╚═╝ ██║╚██████╗██║  ██║███████╗██║ ╚████║
-╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝
+                           
+ ──▒▒▒▒▒▒───▄████▄         
+ ─▒─▄▒─▄▒──███▄█▀          
+ ─▒▒▒▒▒▒▒─▐████──█─█       
+ ─▒▒▒▒▒▒▒──█████▄          
+ ─▒─▒─▒─▒───▀████▀         
+ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄   
+ █▄─▄─▀█▄▄▄░█─▄▄─█─▄▄▄▄█   
+ ██─▄─▀██▄▄░█─██─█▄▄▄▄─█   
+ █▄▄▄▄██▄▄▄▄█▄▄▄▄█▄▄▄▄▄█   
+                           
 
- ██████╗ ██╗   ██╗██╗
-██╔════╝ ██║   ██║██║
-██║  ███╗██║   ██║██║
-██║   ██║██║   ██║██║
-╚██████╔╝╚██████╔╝██║
- ╚═════╝  ╚═════╝ ╚═╝
 ```
 
-The Blümchen GUI is a set of LVGL-based methods
-for creating graphical dialogs without trouble.
+B3 Operating System
 
-There is an example on the setup() method to help you
-getting started with the syntax.
+A long awaited GUI and CLI operating system
+for ESP32 devices.
 
 
-You would likely use this library because:
+You would likely use this OS because:
 
     + creates standard dialogs (e.g. select wifi network)
     + easy to use button/textarea, icons
     + keyboard on screen is automatically handled
+
+
+Creating apps should be easy and don't require
+compiling firmwares. In smartphones we just install
+apps and the same should be available for ESP32.
 
 
 ![Animated demonstration](/docs/screenshots/video_2023-03-24_10-19-02.gif)

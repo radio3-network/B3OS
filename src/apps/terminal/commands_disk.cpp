@@ -14,6 +14,7 @@
 
 #include "core/blum_global.h"
 
+
 // Storage card
 #include "SdFat.h"
 #include "sdios.h"
@@ -89,7 +90,7 @@ void func_touch(char *args, Stream *response) {
 
     String path = getPath(args);
     // open file in write mode
-    File32 file = sd.open(path, FILE_WRITE);
+    File32 file = sd.open(path.c_str(), FILE_WRITE);
     if (!file) {
         response->println("Failed to create file: " + path);
         return;
@@ -448,3 +449,5 @@ void func_print(char *args, Stream *response) {
     // Close the file
     file.close();
 }
+
+
