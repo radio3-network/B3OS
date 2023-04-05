@@ -22,6 +22,8 @@
 #include "commands_internal.hpp"
 #include "commands_disk.hpp"
 
+#include "apps/parser/parser.hpp"
+
 boolean hasWiFiShellStarted = false;
 
 // Define serverWifi here in only one source file
@@ -52,7 +54,7 @@ Commander::API_t API_tree[] = {
     apiElement("reboot", "Reboots the device", func_reboot),
     apiElement("wait", "Wait a number of milliseconds\r\n\tExample: wait 5000", func_wait),
     apiElement("whoami", "Displays the current user", func_wait),
-    apiElement("run", "Runs an app from disk\r\n\tExample: run [ File Name ]", func_run),
+    apiElement("run", "Runs a C-like script from disk\r\n\tExample: run [ File Name ]", func_parse_c_script),
     apiElement("version", "Outputs operating system version", func_version),
     apiElement("logo", "Outputs operating system logo", func_logo),
     // apiElement( "exit", "Exits the current session", func_exit),
