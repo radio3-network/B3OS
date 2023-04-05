@@ -35,7 +35,7 @@ embedded systems it is strongly reccommeded (nay, required) that
 only bytecode be executed. This flag allows the source code to be
 explicitly removed.
 */
-//#define WRENCH_WITHOUT_COMPILER
+#define WRENCH_WITHOUT_COMPILER
 /***********************************************************************/
 
 /***********************************************************************
@@ -48,7 +48,7 @@ WRENCH_REALLY_COMPACT reduces size further by removing the jumptable
 interpreter in favor of a giant switch(). This saves ~6k at the cost
 of a chunk of speed so only use it if you need to.
 */
-//#define WRENCH_COMPACT           // saves a lot, costs some speed
+#define WRENCH_COMPACT           // saves a lot, costs some speed
 //#define WRENCH_REALLY_COMPACT    // saves a little more, costs more speed
 /***********************************************************************/
 
