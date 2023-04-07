@@ -18,8 +18,6 @@
 #include "SdFat.h"
 #include "sdios.h"
 
-String currentPath = "/";
-
 uint32_t cardSectorCount = 0;
 uint8_t sectorBuffer[512];
 // SdCardFactory constructs and initializes the appropriate card.
@@ -30,12 +28,9 @@ SdCard *m_card = nullptr;
 #define SPI_CLOCK SD_SCK_MHZ(6)
 #define SD_CONFIG SdSpiConfig(TF_PIN_CS, DEDICATED_SPI, SPI_CLOCK)
 
+String currentPath = "/";
 SdFat sd;
 
-SdCard card;
-SdFs sdfs;
-
-/*
 void card_initialize() {
     // Select and initialize proper card driver.
     m_card = cardFactory.newCard(SD_CONFIG);
@@ -53,29 +48,6 @@ void card_initialize() {
     if (!sd.begin(SD_CONFIG)) {
         Serial.println("Error initializing storage card.");
     }
-}
-*/
-void card_initialize() {
-    // Initialize SD card
-    if (!card.begin(SD_CONFIG)) {
-        Serial.println("SD card initialization failed!");
-        return;
-    }
-    Serial.println("SD card initialized successfully!");
-
-    // Initialize file system
-    if (!sdfs.begin(SD_CONFIG)) {
-        Serial.println("File system initialization failed!");
-        return;
-    }
-
-    if (!sd.begin(SD_CONFIG)) {
-        Serial.println("Error initializing storage card.");
-    }
-
-    Serial.println("File system initialized successfully!");
-
-
 }
 
 // format a TF/SD card available on a single slot
@@ -117,7 +89,7 @@ void func_touch(char *args, Stream *response) {
 
     String path = getPath(args);
     // open file in write mode
-    File32 file = sd.open(path.c_str(), FILE_WRITE);
+    File32 file = sd.open(path, FILE_WRITE);
     if (!file) {
         response->println("Failed to create file: " + path);
         return;
@@ -425,12 +397,7 @@ void downloadFile(String url, String filename, Stream *response) {
 
 void func_download(char *args, Stream *response) {
     if (args == NULL || args[0] == '\0') {
-        response->println("No file specified");
-        return;
-    }
-
-    if (isWiFiConnected() == false) {
-        response->println("WiFi needs to be connected");
+        response->println("No file or folder specified");
         return;
     }
 

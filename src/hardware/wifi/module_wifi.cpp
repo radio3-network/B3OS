@@ -8,6 +8,7 @@ Therefore provides no support for pin connections.
 */
 
 #include <Preferences.h>
+#include <ArduinoJson.h>
 #include "core/blum_global.h"
 #include "core/blum_status_bar.h"
 
