@@ -9,6 +9,7 @@
 
 extern WiFiServer serverWifi;
 extern Shellminator shell;
+extern Shellminator shellSerial;
 
 // Function declarations
 void setupTerminal();

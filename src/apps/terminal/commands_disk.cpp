@@ -323,6 +323,10 @@ void func_cd(char *args, Stream *response) {
     // avoid double slashes
     currentPath.replace("//", "/");
 
+    shellSerial.setBannerPathText(currentPath.c_str());
+    shell.setBannerPathText(currentPath.c_str());
+    
+
     response->print("Current path: " + currentPath);
     // close directory
     dir.close();
