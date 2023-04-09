@@ -48,8 +48,12 @@ void writeFromFileToFlash(uint32_t address, File32 file, Stream* response) {
         return;
     }
 
+    esp_err_t err;
+
+
     // Erase flash memory
-    esp_err_t err = esp_partition_erase_range(partition, address, fileSize);
+    //err = esp_partition_erase_range(partition, address, fileSize);
+    err = ESP.partitionEraseRange(partition, address, fileSize);
     if (err != ESP_OK) {
         response->print("Failed to erase flash memory: ");
         response->println(esp_err_to_name(err));
@@ -58,7 +62,7 @@ void writeFromFileToFlash(uint32_t address, File32 file, Stream* response) {
     }
 
     // Allocate buffer for file data
-    byte* buffer = new byte[fileSize];
+    uint32_t* buffer = new uint32_t[fileSize];
 
     // Read file data into buffer
     if (file.read(buffer, fileSize) != fileSize) {
@@ -69,7 +73,8 @@ void writeFromFileToFlash(uint32_t address, File32 file, Stream* response) {
     }
 
     // Write data to flash memory
-    err = esp_partition_write(partition, address, buffer, fileSize);
+    err = ESP.partitionWrite(partition, address, buffer, fileSize);
+    //err = esp_partition_write(partition, address, buffer, fileSize);
     if (err != ESP_OK) {
         response->println("Failed to write data to flash memory");
         delete[] buffer;

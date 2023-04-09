@@ -9,7 +9,7 @@
 #include "driver/uart.h"
 
 
-
+/*
 static void SerialSetup(){
 
 
@@ -40,5 +40,5 @@ static void SerialWriteLn(const char* str) {
     uart_write_bytes(UART_NUM_0, buf, len + 1);
 }
 
-
+*/
 #endif

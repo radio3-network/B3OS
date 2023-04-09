@@ -15,7 +15,7 @@ static void btn_event_cb(lv_event_t *e)
     {
         static uint8_t cnt = 0;
         cnt++;
-        SerialWriteLn("Pressed");
+        //SerialWriteLn("Pressed");
         //logWrite("Pressed");
         
         auto label = lv_obj_get_child(btn, 0);

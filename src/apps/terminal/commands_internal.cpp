@@ -44,7 +44,8 @@ void func_reboot(char *args, Stream *response ){
     
     if( Shellminator::waitForKey( response, "yY", 30000 ) ){
       response -> println( "Please wait, the system will reboot..." );
-      esp_restart();
+      ESP.restart();
+      //esp_restart();
     }
 
     else{
