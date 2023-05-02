@@ -7,6 +7,7 @@
 #include "hardware/hardware.h"
 #include "apps/terminal/terminal.hpp"
 #include "apps/launcher/apps.hpp"
+#include "apps/ftp/ftp_server.hpp"
 
 
 // global settings

@@ -9,10 +9,7 @@
 #include "apps/blum_app_settings.h"
 #include "hardware/wifi/blum_app_wifi.h"
 
-
-
 /*
-
  
 ──▒▒▒▒▒▒───▄████▄
 ─▒─▄▒─▄▒──███▄█▀
@@ -24,10 +21,6 @@
 █▄─▄─▀█▄▄▄░█─▄▄─█─▄▄▄▄█
 ██─▄─▀██▄▄░█─██─█▄▄▄▄─█
 ▀▄▄▄▄▀▀▄▄▄▄▀▄▄▄▄▀▄▄▄▄▄▀
-
-version 1.0.1
-
-
 
 The B3 Operating System for Arduino.
 
@@ -42,7 +35,7 @@ this library because:
 
 License: Apache-2.0
 Copyright (c) radio3.network
-URL: https://github.com/radio3-network/BluemchenGUI/
+URL: https://github.com/radio3-network/B3OS/
 
 More projects at https://github.com/radio3-network/
 
@@ -81,7 +74,6 @@ static void loadFlashValues(){
     wifi_ssid = preferences.getString(KEY_WIFI_SSID, "");
     wifi_password = preferences.getString(KEY_WIFI_PASSWORD, "");
     preferences.end();
-    
  
 }
 
@@ -118,10 +110,12 @@ static void start(){
     createWindowHome();
     // create the terminal
     //setupTerminal();
+    setupFTP();
 }
 
 static void loopBlum(){
     lv_timer_handler();
     loopTerminal();
+    loopFTP();
 }
 
