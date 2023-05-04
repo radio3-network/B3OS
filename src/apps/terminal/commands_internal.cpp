@@ -28,7 +28,7 @@ void func_wait(char *args, Stream *response ){
 
 // similar to CLEAR function in Linux
 void func_clear(char *args, Stream *response ){
-  shell.clear();
+  shellWiFi.clear();
   //Shellminator::clear(response);
 }
 
@@ -67,7 +67,7 @@ void func_version(char *args, Stream *response ){
 // prints the logo of the operating system
 void func_logo(char *args, Stream *response ){
   //response -> print(logo);
-  shell.printBanner();
+  shellWiFi.printBanner();
 }
 
 /*
@@ -79,5 +79,5 @@ void func_exit(char *args, Stream *response ){
 
 // sends a beep to the console (not all support this)
 void func_beep(char *args, Stream *response ){
-    shell.beep();
+    shellWiFi.beep();
 }

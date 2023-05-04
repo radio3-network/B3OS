@@ -49,7 +49,7 @@ WiFiServer serverWifi(SERVER_PORT);
 Commander commander;
 
 // Create a Shellminator object, and initialize it to use WiFiServer
-Shellminator shell(
+Shellminator shellWiFi(
     &serverWifi  //, executionFunction
 );
 
@@ -114,7 +114,7 @@ void loopTerminal() {
         setupTerminal();
     }
 
-    shell.update();
+    shellWiFi.update();
 }
 
 void setupTerminal() {
@@ -151,22 +151,22 @@ void setupTerminal() {
     }
 
     // Clear the terminal
-    shell.clear();
+    shellWiFi.clear();
 
     // Attach the logo.
-    shell.attachLogo(logo);
+    shellWiFi.attachLogo(logo);
 
     // Print start message
     Serial.println("Program begin...");
 
-    shell.beginServer();
+    shellWiFi.beginServer();
     Serial.println("[OK]");
 
-    shell.attachCommander(&commander);
-    shell.setBannerPathText(currentPath.c_str());
+    shellWiFi.attachCommander(&commander);
+    shellWiFi.setBannerPathText(currentPath.c_str());
     
     // initialize shell object.
-    shell.begin("root");
+    shellWiFi.begin("root");
 
     // we are ready to start
     hasWiFiShellStarted = true;

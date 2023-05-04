@@ -324,7 +324,7 @@ void func_cd(char *args, Stream *response) {
     currentPath.replace("//", "/");
 
     shellSerial.setBannerPathText(currentPath.c_str());
-    shell.setBannerPathText(currentPath.c_str());
+    shellWiFi.setBannerPathText(currentPath.c_str());
     
 
     response->print("Current path: " + currentPath);

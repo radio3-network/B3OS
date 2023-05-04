@@ -8,7 +8,7 @@
 
 
 extern WiFiServer serverWifi;
-extern Shellminator shell;
+extern Shellminator shellWiFi;
 extern Shellminator shellSerial;
 
 // Function declarations
