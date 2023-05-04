@@ -100,9 +100,13 @@ Commander::API_t API_tree[] = {
     API_ELEMENT_NOT};
 
 void loopTerminal() {
+
+    // serial port shell is always available
     shellSerial.update();
 
-    if (isWiFiConnected() == false) {
+
+    // WiFi shell only available when WiFi runs
+    if (wifiEnabled == false || isWiFiConnected() == false) {
         return;
     }
 

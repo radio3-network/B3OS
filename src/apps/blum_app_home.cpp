@@ -26,6 +26,8 @@ static void btn_event_cb(lv_event_t *e)
 
 
 static void createWindowHome(){
+    Serial.println("Create window: Home");
+    
     // delete the memory map
     HashMapClear(mapWindows);
     // restore the icon and index

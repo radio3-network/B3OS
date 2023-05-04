@@ -29,11 +29,24 @@ void wifiStop() {
 }
 
 boolean wifiStart() {
+    Serial.println("Starting WiFi");
     // remove the wifi icon at the beginning
     iconWifiRemove();
 
     // read from flash memory
     preferences.begin(NAMESPACE_GENERIC, false);
+
+    // there is no wifi to start
+    if (wifiEnabled == false) {
+        Serial.println("WiFi is disabled");
+        return false;
+    }
+
+     if(preferences.isKey(KEY_WIFI_ENABLED) == false){
+        Serial.println("There is no WiFi previously configured");
+        return false;
+     }
+
     // preferences.putBool(KEY_WIFI_ENABLED, enabledWifi);
     //  if wifi enabled, set it to true
     wifiEnabled = preferences.getBool(KEY_WIFI_ENABLED, false);
@@ -46,10 +59,7 @@ boolean wifiStart() {
     // no more need to read stuff from flash
     preferences.end();
 
-    // there is no wifi to start
-    if (wifiEnabled == false) {
-        return false;
-    }
+   
 
     if (wifi_ssid.isEmpty()) {
         Serial.println("WiFi needs to be configured, please connect to a reachable network");

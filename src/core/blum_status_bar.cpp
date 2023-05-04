@@ -50,6 +50,9 @@ static void iconWifiRemove(){
 */
 static void buildStatusBar() {
   
+    Serial.println("Build status bar");
+    
+
   static lv_style_t style_btn;
   lv_style_init(&style_btn);
   lv_style_set_bg_color(&style_btn, lv_color_hex(0xC5C5C5));

@@ -68,11 +68,21 @@ x internal RGB led effects (e.g. breathing)
 
 static void loadFlashValues(){
     
+    Serial.println("Reading the values from flash memory");
+
     preferences.begin(NAMESPACE_GENERIC, false);
+
+    // only proceed when there are WIFI keys inside the flash
+    if(preferences.isKey(KEY_WIFI_ENABLED)){
     // WIFI
     wifiEnabled = preferences.getBool(KEY_WIFI_ENABLED, false);
     wifi_ssid = preferences.getString(KEY_WIFI_SSID, "");
     wifi_password = preferences.getString(KEY_WIFI_PASSWORD, "");
+    }else{
+        wifiEnabled = false;
+    }
+
+    
     preferences.end();
  
 }
@@ -90,6 +100,7 @@ static void start(){
     Serial.println("");
     Serial.print(logo);
     
+    Serial.println("Starting B3OS");
     // load values in flash memory
     loadFlashValues();
     // load wifi
