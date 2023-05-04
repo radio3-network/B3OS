@@ -140,6 +140,7 @@ void setupTerminal() {
     shellSerial.clear();
     shellSerial.attachLogo(logo);
     shellSerial.attachCommander(&commander);
+    
     // disable color formatting
     shellSerial.enableFormatting = false;
     shellSerial.setBannerPathText(currentPath.c_str());
