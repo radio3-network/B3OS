@@ -104,6 +104,9 @@ boolean wifiStart() {
     // create the icon on the status bar, only when connected
     if (isConnected) {
         iconWifiCreate();
+        wifiEnabled = true;
+    }else{
+        wifiEnabled = false;
     }
     // are we really connected?
     return isConnected;

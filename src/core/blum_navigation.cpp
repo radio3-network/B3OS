@@ -96,6 +96,7 @@ static void navGoBack() {
     lv_obj_t *winPresent = (lv_obj_t *)HashMapGet(mapWindows, windowPresent);
 
     // remove all old items
+    //lv_obj_move_background(winPresent);
     lv_obj_clean(winPresent);
     lv_obj_del(winPresent);
 

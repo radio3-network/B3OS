@@ -15,6 +15,7 @@ static void event_settings_not_implemented(lv_event_t *e){
  * Create the Settings menu for configuring the board
 */
 static void createWindowSettings(){
+    Serial.println("Create window: Settings");
     // create a usable window to place components
     settingsWindow = createWindow("Settings");
     

@@ -46,7 +46,8 @@ boolean hasWiFiShellStarted = false;
 WiFiServer serverWifi(SERVER_PORT);
 
 // We have to create an object from Commander class.
-Commander commander;
+Commander commanderWiFi;
+Commander commanderSerial;
 
 // Create a Shellminator object, and initialize it to use WiFiServer
 Shellminator shellWiFi(
@@ -58,7 +59,7 @@ Shellminator shellSerial(&Serial);
 
 Commander::API_t API_tree[] = {
     // custom commands
-    apiElement("clear", "Clear the screen contents", func_clear),
+    apiElement("clear", "Clear the screen contents", func_clearWiFi),
     apiElement("formatCard", "Format (erase/initialize) the memory card", func_formatCard),
     apiElement("echo", "Print a line of text\r\n\tExample: echo [ message ]", func_echo),
     apiElement("ls", "List files in a single line", func_ls),
@@ -73,9 +74,9 @@ Commander::API_t API_tree[] = {
     apiElement("run", "Runs an app from disk\r\n\tExample: run [ File Name ]", func_run),
     apiElement("parse", "Parse a script from disk\r\n\tExample: parse [ File Name ]", func_parse_c_script),
     apiElement("version", "Outputs operating system version", func_version),
-    apiElement("logo", "Outputs operating system logo", func_logo),
+    apiElement("logo", "Outputs operating system logo", func_logoWiFi),
     //apiElement( "exit", "Exits the current session", func_exit),
-    apiElement("beep", "Sends a beep to the console", func_beep),
+    apiElement("beep", "Sends a beep to the console", func_beepWiFi),
     apiElement("download", "Download a file from the internet\r\n\tExample: download [ URL ] [ File Name ]", func_download),
     apiElement("print", "Print to console the contents of a file\r\n\tExample: print [ File Name ]", func_print),
 
@@ -97,25 +98,54 @@ Commander::API_t API_tree[] = {
     API_ELEMENT_COS,
     API_ELEMENT_ABS,
     API_ELEMENT_RANDOM,
-    API_ELEMENT_NOT};
+    API_ELEMENT_NOT
+    };
 
-void loopTerminal() {
+    Commander::API_t API_treeSerial[] = {
+    // custom commands
+    //apiElement("clear", "Clear the screen contents", func_clearWiFi),
+    apiElement("formatCard", "Format (erase/initialize) the memory card", func_formatCard),
+    apiElement("echo", "Print a line of text\r\n\tExample: echo [ message ]", func_echo),
+    apiElement("ls", "List files in a single line", func_ls),
+    apiElement("ll", "List files with details", func_ll),
+    apiElement("mkdir", "Make a directory\r\n\tExample: mkdir [ Folder Name ]", func_mkdir),
+    apiElement("cd", "Change directory\r\n\tExample: cd [ Folder Name ]", func_cd),
+    apiElement("rm", "Remove one file", func_rm),
+    apiElement("touch", "Create an empty file\r\n\tExample: touch [ File Name ]", func_touch),
+    apiElement("reboot", "Reboots the device", func_reboot),
+    apiElement("wait", "Wait a number of milliseconds\r\n\tExample: wait 5000", func_wait),
+    apiElement("whoami", "Displays the current user", func_wait),
+    apiElement("run", "Runs an app from disk\r\n\tExample: run [ File Name ]", func_run),
+    apiElement("parse", "Parse a script from disk\r\n\tExample: parse [ File Name ]", func_parse_c_script),
+    apiElement("version", "Outputs operating system version", func_version),
+    //apiElement("logo", "Outputs operating system logo", func_logoWiFi),
+    //apiElement( "exit", "Exits the current session", func_exit),
+    //apiElement("beep", "Sends a beep to the console", func_beepWiFi),
+    apiElement("download", "Download a file from the internet\r\n\tExample: download [ URL ] [ File Name ]", func_download),
+    apiElement("print", "Print to console the contents of a file\r\n\tExample: print [ File Name ]", func_print),
 
-    // serial port shell is always available
-    shellSerial.update();
+    // built-in commands
+    API_ELEMENT_MILLIS,
+    API_ELEMENT_MICROS,
+    API_ELEMENT_UPTIME,
+    API_ELEMENT_PINMODE,
+    API_ELEMENT_DIGITALWRITE,
+    API_ELEMENT_DIGITALREAD,
+    API_ELEMENT_ANALOGREAD,
+    API_ELEMENT_IPCONFIG,
+    API_ELEMENT_WIFISTAT,
+    API_ELEMENT_WIFISCAN,
+    API_ELEMENT_CONFIGTIME,
+    API_ELEMENT_DATETIME,
+    API_ELEMENT_NEOFETCH,
+    API_ELEMENT_SIN,
+    API_ELEMENT_COS,
+    API_ELEMENT_ABS,
+    API_ELEMENT_RANDOM,
+    API_ELEMENT_NOT
+    };
 
 
-    // WiFi shell only available when WiFi runs
-    if (wifiEnabled == false || isWiFiConnected() == false) {
-        return;
-    }
-
-    if (hasWiFiShellStarted == false) {
-        setupTerminal();
-    }
-
-    shellWiFi.update();
-}
 
 void setupTerminal() {
     // setup the current path
@@ -127,24 +157,28 @@ void setupTerminal() {
     // There is an option to attach a debug channel to Commander.
     // It can be handy to find any problems during the initialization
     // phase. In this example we will use Serial for this.
-    commander.attachDebugChannel(&Serial);
+    //commanderWiFi.attachDebugChannel(&Serial);
 
     // At start, Commander does not know anything about our commands.
     // We have to attach the API_tree array from the previous steps
     // to Commander to work properly.
-    commander.attachTree(API_tree);
+    commanderWiFi.attachTree(API_tree);
+    commanderSerial.attachTree(API_treeSerial);
 
     // Initialize Commander.
-    commander.init();
+    commanderWiFi.init();
+    commanderSerial.init();
 
+    // prepare the serial
     shellSerial.clear();
     shellSerial.attachLogo(logo);
-    shellSerial.attachCommander(&commander);
+    shellSerial.attachCommander(&commanderSerial);
     
-    // disable color formatting
-    shellSerial.enableFormatting = false;
+
+    //shellSerial.enableFormatting = false;
     shellSerial.setBannerPathText(currentPath.c_str());
     shellSerial.begin("root");
+
 
     // provide the WiFi shell
     if (isWiFiConnected() == false) {
@@ -163,7 +197,7 @@ void setupTerminal() {
     shellWiFi.beginServer();
     Serial.println("[OK]");
 
-    shellWiFi.attachCommander(&commander);
+    shellWiFi.attachCommander(&commanderWiFi);
     shellWiFi.setBannerPathText(currentPath.c_str());
     
     // initialize shell object.
@@ -171,6 +205,30 @@ void setupTerminal() {
 
     // we are ready to start
     hasWiFiShellStarted = true;
+}
+
+
+
+void loopTerminal() {
+
+    // serial port shell is always available
+    shellSerial.update();
+
+
+    if (wifiEnabled == false) {
+        return;
+    }
+
+    // WiFi shell only available when WiFi runs
+    if (isWiFiConnected() == false) {
+        return;
+    }
+
+    if (hasWiFiShellStarted == false) {
+        setupTerminal();
+    }
+
+    shellWiFi.update();
 }
 
 #endif
