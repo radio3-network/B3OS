@@ -1,3 +1,8 @@
+#*Attention:*
+This project is archived.
+As (better) option I would recommend you to use https://tactility.one/
+
+
 
 ![B3OS](/docs/screenshots/start_screen.png)
 
